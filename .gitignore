@@ -1,0 +1,23 @@
+# Python environment and caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Credentials and local settings
+.env
+.env.*
+!.env.example
+
+# Generated requests, responses, temporary files and editor files
+outputs/
+tmp/
+.DS_Store
+.idea/
+.vscode/
+
+# Course documents are kept outside this repository
+*.pdf
+*.docx

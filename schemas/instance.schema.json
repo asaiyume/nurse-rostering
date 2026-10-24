@@ -1,0 +1,398 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Nurse rostering instance v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "instance_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scenario_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "horizon_weeks": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "week_index": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "days": {
+      "const": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun"
+      ]
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "shift_types": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "min_consecutive": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "max_consecutive": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "name",
+          "min_consecutive",
+          "max_consecutive"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "forbidden_successions": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "uniqueItems": true
+      }
+    },
+    "contracts": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "total_assignments": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "max": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "min",
+              "max"
+            ],
+            "additionalProperties": false
+          },
+          "consecutive_work_days": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "max": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "min",
+              "max"
+            ],
+            "additionalProperties": false
+          },
+          "consecutive_days_off": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "max": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "min",
+              "max"
+            ],
+            "additionalProperties": false
+          },
+          "max_working_weekends": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "complete_weekends": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "total_assignments",
+          "consecutive_work_days",
+          "consecutive_days_off",
+          "max_working_weekends",
+          "complete_weekends"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "nurses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "contract": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "id",
+          "contract",
+          "skills"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "history": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "total_assignments": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "working_weekends": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "last_shift": {
+            "type": "string",
+            "minLength": 1
+          },
+          "consecutive_same_shift": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "consecutive_work_days": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "consecutive_days_off": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "total_assignments",
+          "working_weekends",
+          "last_shift",
+          "consecutive_same_shift",
+          "consecutive_work_days",
+          "consecutive_days_off"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "enum": [
+              "Mon",
+              "Tue",
+              "Wed",
+              "Thu",
+              "Fri",
+              "Sat",
+              "Sun"
+            ]
+          },
+          "shift": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skill": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minimum": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "preferred": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "day",
+          "shift",
+          "skill",
+          "minimum",
+          "preferred"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "shift_off_requests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nurse_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "day": {
+            "enum": [
+              "Mon",
+              "Tue",
+              "Wed",
+              "Thu",
+              "Fri",
+              "Sat",
+              "Sun"
+            ]
+          },
+          "shift": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "nurse_id",
+          "day",
+          "shift"
+        ],
+        "additionalProperties": false
+      },
+      "uniqueItems": true
+    },
+    "sources": {
+      "type": "object",
+      "properties": {
+        "scenario": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "history": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "week_data": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "scenario",
+        "history",
+        "week_data"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "instance_id",
+    "scenario_id",
+    "horizon_weeks",
+    "week_index",
+    "days",
+    "skills",
+    "shift_types",
+    "forbidden_successions",
+    "contracts",
+    "nurses",
+    "history",
+    "coverage",
+    "shift_off_requests",
+    "sources"
+  ],
+  "additionalProperties": false
+}
