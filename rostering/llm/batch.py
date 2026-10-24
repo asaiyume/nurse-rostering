@@ -13,7 +13,7 @@ import time
 import uuid
 
 from .api import APIError
-from ..contracts import ROOT
+from ..contracts import ROOT, validate_instance
 from ..evaluate import evaluate
 from ..inrc2 import convert, read_reference
 from .pipeline import build_request, run_roster
@@ -83,7 +83,11 @@ def main() -> None:
     folder = ROOT / plan["scenario_dir"]
     for case in plan["cases"]:
         name = folder.name
-        instance = convert(folder / f"Sc-{name}.txt", folder / f"H0-{name}-{case['history']}.txt", folder / f"WD-{name}-{case['week_data']}.txt")
+        if case.get("instance"):
+            instance = json.loads((ROOT / case["instance"]).read_text())
+            validate_instance(instance)
+        else:
+            instance = convert(folder / f"Sc-{name}.txt", folder / f"H0-{name}-{case['history']}.txt", folder / f"WD-{name}-{case['week_data']}.txt")
         label = "unlabelled"
         if case.get("feasible_witness"):
             witness = read_reference(instance, ROOT / case["feasible_witness"])

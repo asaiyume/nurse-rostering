@@ -1,6 +1,6 @@
 # Shared contract
 
-Both solutions consume the same instance JSON and export the same roster JSON. The full specifications are [instance.schema.json](../schemas/instance.schema.json) and [roster.schema.json](../schemas/roster.schema.json); an [example input](../data/instances/n005w4_h0_wd1.json) is included.
+Both solutions consume the same instance JSON and export the same roster JSON. The full specifications are [instance.schema.json](../schemas/instance.schema.json) and [roster.schema.json](../schemas/roster.schema.json); an [example input](../converted/n005w4/h0_wd1.json) is included.
 
 ## Input
 
@@ -12,7 +12,7 @@ Both solutions consume the same instance JSON and export the same roster JSON. T
 - Shift-off requests and nurse history before Monday.
 - Source paths and hashes for the three original INRC2 files.
 
-Use `python -m rostering convert` or `rostering.inrc2.convert`; both solutions can reuse this conversion. A WD suffix identifies a data variant, not a chronological week. Historical `None` is normalised to `Off`; previous shifts and streaks still affect Monday. Full-horizon contract limits remain full-horizon limits.
+Load files directly from `converted/`; both experiment plans already use them. For new cases, use `python -m rostering convert` or `rostering.inrc2.convert`. A WD suffix identifies a data variant, not a chronological week. Historical `None` is normalised to `Off`; previous shifts and streaks still affect Monday. Full-horizon contract limits remain full-horizon limits.
 
 ## Output
 

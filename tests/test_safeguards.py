@@ -22,7 +22,7 @@ def response(text):
 class SafeguardTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.instance = json.loads((ROOT / "data/instances/n005w4_h0_wd1.json").read_text())
+        cls.instance = json.loads((ROOT / "converted/n005w4/h0_wd1.json").read_text())
         from rostering.inrc2 import read_reference
         cls.roster = read_reference(cls.instance, ROOT / "inrc2/n005w4/Solution_H_0-WD_1-2-3-3/Sol-n005w4-1-0.txt")
         cls.config = json.loads((ROOT / "config/llm.json").read_text())

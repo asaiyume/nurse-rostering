@@ -15,7 +15,7 @@ from rostering.io import write_json
 
 class ReportTests(unittest.TestCase):
     def test_matched_report_replays_outputs_without_api_calls(self):
-        instance = json.loads((ROOT / "data/instances/n005w4_h0_wd1.json").read_text())
+        instance = json.loads((ROOT / "converted/n005w4/h0_wd1.json").read_text())
         reference = read_reference(instance, ROOT / "inrc2/n005w4/Solution_H_0-WD_1-2-3-3/Sol-n005w4-1-0.txt")
         config = json.loads((ROOT / "config/llm.json").read_text())
         response = {"model": "x-test-2", "choices": [{"finish_reason": "stop", "message": {"content": json.dumps(reference)}}], "usage": {"prompt_tokens": 100, "completion_tokens": 100, "total_tokens": 200}}
