@@ -1,0 +1,2103 @@
+{
+  "schema_version": "1.0",
+  "instance_id": "n060w8_H0-n060w8-1_WD-n060w8-2_week0",
+  "scenario_id": "n060w8",
+  "horizon_weeks": 8,
+  "week_index": 0,
+  "days": [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun"
+  ],
+  "skills": [
+    "HeadNurse",
+    "Nurse",
+    "Caretaker",
+    "Trainee"
+  ],
+  "shift_types": [
+    {
+      "name": "Early",
+      "min_consecutive": 2,
+      "max_consecutive": 5
+    },
+    {
+      "name": "Day",
+      "min_consecutive": 2,
+      "max_consecutive": 56
+    },
+    {
+      "name": "Late",
+      "min_consecutive": 2,
+      "max_consecutive": 5
+    },
+    {
+      "name": "Night",
+      "min_consecutive": 4,
+      "max_consecutive": 5
+    }
+  ],
+  "forbidden_successions": {
+    "Early": [],
+    "Day": [],
+    "Late": [
+      "Early",
+      "Day"
+    ],
+    "Night": [
+      "Early",
+      "Day",
+      "Late"
+    ]
+  },
+  "contracts": {
+    "FullTime": {
+      "total_assignments": {
+        "min": 30,
+        "max": 40
+      },
+      "consecutive_work_days": {
+        "min": 3,
+        "max": 5
+      },
+      "consecutive_days_off": {
+        "min": 2,
+        "max": 3
+      },
+      "max_working_weekends": 4,
+      "complete_weekends": true
+    },
+    "PartTime": {
+      "total_assignments": {
+        "min": 20,
+        "max": 30
+      },
+      "consecutive_work_days": {
+        "min": 3,
+        "max": 5
+      },
+      "consecutive_days_off": {
+        "min": 2,
+        "max": 5
+      },
+      "max_working_weekends": 4,
+      "complete_weekends": true
+    },
+    "HalfTime": {
+      "total_assignments": {
+        "min": 15,
+        "max": 20
+      },
+      "consecutive_work_days": {
+        "min": 3,
+        "max": 5
+      },
+      "consecutive_days_off": {
+        "min": 3,
+        "max": 5
+      },
+      "max_working_weekends": 2,
+      "complete_weekends": true
+    }
+  },
+  "nurses": [
+    {
+      "id": "HN_0",
+      "contract": "PartTime",
+      "skills": [
+        "HeadNurse",
+        "Nurse"
+      ]
+    },
+    {
+      "id": "HN_1",
+      "contract": "FullTime",
+      "skills": [
+        "HeadNurse",
+        "Nurse"
+      ]
+    },
+    {
+      "id": "HN_2",
+      "contract": "HalfTime",
+      "skills": [
+        "HeadNurse",
+        "Nurse"
+      ]
+    },
+    {
+      "id": "HN_3",
+      "contract": "FullTime",
+      "skills": [
+        "HeadNurse",
+        "Nurse"
+      ]
+    },
+    {
+      "id": "HN_4",
+      "contract": "FullTime",
+      "skills": [
+        "HeadNurse",
+        "Nurse"
+      ]
+    },
+    {
+      "id": "HN_5",
+      "contract": "HalfTime",
+      "skills": [
+        "HeadNurse",
+        "Nurse"
+      ]
+    },
+    {
+      "id": "HN_6",
+      "contract": "PartTime",
+      "skills": [
+        "HeadNurse",
+        "Nurse"
+      ]
+    },
+    {
+      "id": "NU_7",
+      "contract": "FullTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_8",
+      "contract": "PartTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_9",
+      "contract": "FullTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_10",
+      "contract": "HalfTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_11",
+      "contract": "HalfTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_12",
+      "contract": "HalfTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_13",
+      "contract": "HalfTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_14",
+      "contract": "PartTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_15",
+      "contract": "FullTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_16",
+      "contract": "PartTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_17",
+      "contract": "PartTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_18",
+      "contract": "FullTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_19",
+      "contract": "HalfTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_20",
+      "contract": "FullTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_21",
+      "contract": "FullTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_22",
+      "contract": "HalfTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_23",
+      "contract": "FullTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_24",
+      "contract": "FullTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_25",
+      "contract": "FullTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_26",
+      "contract": "HalfTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_27",
+      "contract": "PartTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_28",
+      "contract": "PartTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "NU_29",
+      "contract": "HalfTime",
+      "skills": [
+        "Nurse",
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_30",
+      "contract": "HalfTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_31",
+      "contract": "HalfTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_32",
+      "contract": "FullTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_33",
+      "contract": "FullTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_34",
+      "contract": "FullTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_35",
+      "contract": "FullTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_36",
+      "contract": "HalfTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_37",
+      "contract": "FullTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_38",
+      "contract": "FullTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_39",
+      "contract": "FullTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_40",
+      "contract": "HalfTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_41",
+      "contract": "PartTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_42",
+      "contract": "FullTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_43",
+      "contract": "PartTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_44",
+      "contract": "HalfTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_45",
+      "contract": "PartTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_46",
+      "contract": "PartTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_47",
+      "contract": "FullTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_48",
+      "contract": "HalfTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "CT_49",
+      "contract": "HalfTime",
+      "skills": [
+        "Caretaker"
+      ]
+    },
+    {
+      "id": "TR_50",
+      "contract": "HalfTime",
+      "skills": [
+        "Trainee"
+      ]
+    },
+    {
+      "id": "TR_51",
+      "contract": "PartTime",
+      "skills": [
+        "Trainee"
+      ]
+    },
+    {
+      "id": "TR_52",
+      "contract": "PartTime",
+      "skills": [
+        "Trainee"
+      ]
+    },
+    {
+      "id": "TR_53",
+      "contract": "FullTime",
+      "skills": [
+        "Trainee"
+      ]
+    },
+    {
+      "id": "TR_54",
+      "contract": "PartTime",
+      "skills": [
+        "Trainee"
+      ]
+    },
+    {
+      "id": "TR_55",
+      "contract": "FullTime",
+      "skills": [
+        "Trainee"
+      ]
+    },
+    {
+      "id": "TR_56",
+      "contract": "PartTime",
+      "skills": [
+        "Trainee"
+      ]
+    },
+    {
+      "id": "TR_57",
+      "contract": "FullTime",
+      "skills": [
+        "Trainee"
+      ]
+    },
+    {
+      "id": "TR_58",
+      "contract": "FullTime",
+      "skills": [
+        "Trainee"
+      ]
+    },
+    {
+      "id": "TR_59",
+      "contract": "FullTime",
+      "skills": [
+        "Trainee"
+      ]
+    }
+  ],
+  "history": {
+    "HN_0": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Night",
+      "consecutive_same_shift": 2,
+      "consecutive_work_days": 2,
+      "consecutive_days_off": 0
+    },
+    "HN_1": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Early",
+      "consecutive_same_shift": 2,
+      "consecutive_work_days": 2,
+      "consecutive_days_off": 0
+    },
+    "HN_2": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 4
+    },
+    "HN_3": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Late",
+      "consecutive_same_shift": 1,
+      "consecutive_work_days": 4,
+      "consecutive_days_off": 0
+    },
+    "HN_4": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "HN_5": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 4
+    },
+    "HN_6": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Late",
+      "consecutive_same_shift": 3,
+      "consecutive_work_days": 3,
+      "consecutive_days_off": 0
+    },
+    "NU_7": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Day",
+      "consecutive_same_shift": 3,
+      "consecutive_work_days": 3,
+      "consecutive_days_off": 0
+    },
+    "NU_8": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 4
+    },
+    "NU_9": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Night",
+      "consecutive_same_shift": 3,
+      "consecutive_work_days": 3,
+      "consecutive_days_off": 0
+    },
+    "NU_10": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "NU_11": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "NU_12": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 4
+    },
+    "NU_13": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "NU_14": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 4
+    },
+    "NU_15": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Late",
+      "consecutive_same_shift": 2,
+      "consecutive_work_days": 4,
+      "consecutive_days_off": 0
+    },
+    "NU_16": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "NU_17": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "NU_18": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "NU_19": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "NU_20": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Late",
+      "consecutive_same_shift": 2,
+      "consecutive_work_days": 2,
+      "consecutive_days_off": 0
+    },
+    "NU_21": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Early",
+      "consecutive_same_shift": 1,
+      "consecutive_work_days": 4,
+      "consecutive_days_off": 0
+    },
+    "NU_22": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "NU_23": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Late",
+      "consecutive_same_shift": 4,
+      "consecutive_work_days": 4,
+      "consecutive_days_off": 0
+    },
+    "NU_24": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "NU_25": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Night",
+      "consecutive_same_shift": 2,
+      "consecutive_work_days": 2,
+      "consecutive_days_off": 0
+    },
+    "NU_26": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Day",
+      "consecutive_same_shift": 4,
+      "consecutive_work_days": 4,
+      "consecutive_days_off": 0
+    },
+    "NU_27": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "NU_28": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "NU_29": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 4
+    },
+    "CT_30": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 4
+    },
+    "CT_31": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 4
+    },
+    "CT_32": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Late",
+      "consecutive_same_shift": 3,
+      "consecutive_work_days": 3,
+      "consecutive_days_off": 0
+    },
+    "CT_33": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "CT_34": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "CT_35": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "CT_36": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 4
+    },
+    "CT_37": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Day",
+      "consecutive_same_shift": 2,
+      "consecutive_work_days": 4,
+      "consecutive_days_off": 0
+    },
+    "CT_38": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Early",
+      "consecutive_same_shift": 4,
+      "consecutive_work_days": 4,
+      "consecutive_days_off": 0
+    },
+    "CT_39": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "CT_40": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "CT_41": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Night",
+      "consecutive_same_shift": 2,
+      "consecutive_work_days": 2,
+      "consecutive_days_off": 0
+    },
+    "CT_42": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "CT_43": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Early",
+      "consecutive_same_shift": 3,
+      "consecutive_work_days": 3,
+      "consecutive_days_off": 0
+    },
+    "CT_44": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 3
+    },
+    "CT_45": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "CT_46": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "CT_47": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Night",
+      "consecutive_same_shift": 2,
+      "consecutive_work_days": 4,
+      "consecutive_days_off": 0
+    },
+    "CT_48": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 4
+    },
+    "CT_49": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "TR_50": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 5
+    },
+    "TR_51": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "TR_52": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 4
+    },
+    "TR_53": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "TR_54": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "TR_55": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "TR_56": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Night",
+      "consecutive_same_shift": 1,
+      "consecutive_work_days": 3,
+      "consecutive_days_off": 0
+    },
+    "TR_57": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    },
+    "TR_58": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Day",
+      "consecutive_same_shift": 2,
+      "consecutive_work_days": 2,
+      "consecutive_days_off": 0
+    },
+    "TR_59": {
+      "total_assignments": 0,
+      "working_weekends": 0,
+      "last_shift": "Off",
+      "consecutive_same_shift": 0,
+      "consecutive_work_days": 0,
+      "consecutive_days_off": 2
+    }
+  },
+  "coverage": [
+    {
+      "day": "Mon",
+      "shift": "Early",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Tue",
+      "shift": "Early",
+      "skill": "HeadNurse",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Wed",
+      "shift": "Early",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Thu",
+      "shift": "Early",
+      "skill": "HeadNurse",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Fri",
+      "shift": "Early",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Sat",
+      "shift": "Early",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Sun",
+      "shift": "Early",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Mon",
+      "shift": "Early",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 3
+    },
+    {
+      "day": "Tue",
+      "shift": "Early",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Wed",
+      "shift": "Early",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Thu",
+      "shift": "Early",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Fri",
+      "shift": "Early",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Sat",
+      "shift": "Early",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Sun",
+      "shift": "Early",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Mon",
+      "shift": "Early",
+      "skill": "Caretaker",
+      "minimum": 4,
+      "preferred": 4
+    },
+    {
+      "day": "Tue",
+      "shift": "Early",
+      "skill": "Caretaker",
+      "minimum": 5,
+      "preferred": 7
+    },
+    {
+      "day": "Wed",
+      "shift": "Early",
+      "skill": "Caretaker",
+      "minimum": 5,
+      "preferred": 6
+    },
+    {
+      "day": "Thu",
+      "shift": "Early",
+      "skill": "Caretaker",
+      "minimum": 3,
+      "preferred": 4
+    },
+    {
+      "day": "Fri",
+      "shift": "Early",
+      "skill": "Caretaker",
+      "minimum": 4,
+      "preferred": 5
+    },
+    {
+      "day": "Sat",
+      "shift": "Early",
+      "skill": "Caretaker",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Sun",
+      "shift": "Early",
+      "skill": "Caretaker",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Mon",
+      "shift": "Early",
+      "skill": "Trainee",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Tue",
+      "shift": "Early",
+      "skill": "Trainee",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Wed",
+      "shift": "Early",
+      "skill": "Trainee",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Thu",
+      "shift": "Early",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Fri",
+      "shift": "Early",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Sat",
+      "shift": "Early",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Sun",
+      "shift": "Early",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Mon",
+      "shift": "Day",
+      "skill": "HeadNurse",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Tue",
+      "shift": "Day",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Wed",
+      "shift": "Day",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Thu",
+      "shift": "Day",
+      "skill": "HeadNurse",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Fri",
+      "shift": "Day",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Sat",
+      "shift": "Day",
+      "skill": "HeadNurse",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Sun",
+      "shift": "Day",
+      "skill": "HeadNurse",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Mon",
+      "shift": "Day",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Tue",
+      "shift": "Day",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Wed",
+      "shift": "Day",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Thu",
+      "shift": "Day",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Fri",
+      "shift": "Day",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 3
+    },
+    {
+      "day": "Sat",
+      "shift": "Day",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Sun",
+      "shift": "Day",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Mon",
+      "shift": "Day",
+      "skill": "Caretaker",
+      "minimum": 4,
+      "preferred": 5
+    },
+    {
+      "day": "Tue",
+      "shift": "Day",
+      "skill": "Caretaker",
+      "minimum": 4,
+      "preferred": 5
+    },
+    {
+      "day": "Wed",
+      "shift": "Day",
+      "skill": "Caretaker",
+      "minimum": 3,
+      "preferred": 6
+    },
+    {
+      "day": "Thu",
+      "shift": "Day",
+      "skill": "Caretaker",
+      "minimum": 5,
+      "preferred": 6
+    },
+    {
+      "day": "Fri",
+      "shift": "Day",
+      "skill": "Caretaker",
+      "minimum": 5,
+      "preferred": 6
+    },
+    {
+      "day": "Sat",
+      "shift": "Day",
+      "skill": "Caretaker",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Sun",
+      "shift": "Day",
+      "skill": "Caretaker",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Mon",
+      "shift": "Day",
+      "skill": "Trainee",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Tue",
+      "shift": "Day",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Wed",
+      "shift": "Day",
+      "skill": "Trainee",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Thu",
+      "shift": "Day",
+      "skill": "Trainee",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Fri",
+      "shift": "Day",
+      "skill": "Trainee",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Sat",
+      "shift": "Day",
+      "skill": "Trainee",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Sun",
+      "shift": "Day",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Mon",
+      "shift": "Late",
+      "skill": "HeadNurse",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Tue",
+      "shift": "Late",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Wed",
+      "shift": "Late",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Thu",
+      "shift": "Late",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Fri",
+      "shift": "Late",
+      "skill": "HeadNurse",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Sat",
+      "shift": "Late",
+      "skill": "HeadNurse",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Sun",
+      "shift": "Late",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Mon",
+      "shift": "Late",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 3
+    },
+    {
+      "day": "Tue",
+      "shift": "Late",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Wed",
+      "shift": "Late",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Thu",
+      "shift": "Late",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Fri",
+      "shift": "Late",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Sat",
+      "shift": "Late",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Sun",
+      "shift": "Late",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Mon",
+      "shift": "Late",
+      "skill": "Caretaker",
+      "minimum": 3,
+      "preferred": 4
+    },
+    {
+      "day": "Tue",
+      "shift": "Late",
+      "skill": "Caretaker",
+      "minimum": 5,
+      "preferred": 5
+    },
+    {
+      "day": "Wed",
+      "shift": "Late",
+      "skill": "Caretaker",
+      "minimum": 2,
+      "preferred": 5
+    },
+    {
+      "day": "Thu",
+      "shift": "Late",
+      "skill": "Caretaker",
+      "minimum": 4,
+      "preferred": 5
+    },
+    {
+      "day": "Fri",
+      "shift": "Late",
+      "skill": "Caretaker",
+      "minimum": 3,
+      "preferred": 5
+    },
+    {
+      "day": "Sat",
+      "shift": "Late",
+      "skill": "Caretaker",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Sun",
+      "shift": "Late",
+      "skill": "Caretaker",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Mon",
+      "shift": "Late",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Tue",
+      "shift": "Late",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Wed",
+      "shift": "Late",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Thu",
+      "shift": "Late",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Fri",
+      "shift": "Late",
+      "skill": "Trainee",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Sat",
+      "shift": "Late",
+      "skill": "Trainee",
+      "minimum": 0,
+      "preferred": 1
+    },
+    {
+      "day": "Sun",
+      "shift": "Late",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Mon",
+      "shift": "Night",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Tue",
+      "shift": "Night",
+      "skill": "HeadNurse",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Wed",
+      "shift": "Night",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Thu",
+      "shift": "Night",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Fri",
+      "shift": "Night",
+      "skill": "HeadNurse",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Sat",
+      "shift": "Night",
+      "skill": "HeadNurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Sun",
+      "shift": "Night",
+      "skill": "HeadNurse",
+      "minimum": 0,
+      "preferred": 0
+    },
+    {
+      "day": "Mon",
+      "shift": "Night",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Tue",
+      "shift": "Night",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 3
+    },
+    {
+      "day": "Wed",
+      "shift": "Night",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Thu",
+      "shift": "Night",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 3
+    },
+    {
+      "day": "Fri",
+      "shift": "Night",
+      "skill": "Nurse",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Sat",
+      "shift": "Night",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Sun",
+      "shift": "Night",
+      "skill": "Nurse",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Mon",
+      "shift": "Night",
+      "skill": "Caretaker",
+      "minimum": 5,
+      "preferred": 6
+    },
+    {
+      "day": "Tue",
+      "shift": "Night",
+      "skill": "Caretaker",
+      "minimum": 5,
+      "preferred": 6
+    },
+    {
+      "day": "Wed",
+      "shift": "Night",
+      "skill": "Caretaker",
+      "minimum": 4,
+      "preferred": 5
+    },
+    {
+      "day": "Thu",
+      "shift": "Night",
+      "skill": "Caretaker",
+      "minimum": 4,
+      "preferred": 5
+    },
+    {
+      "day": "Fri",
+      "shift": "Night",
+      "skill": "Caretaker",
+      "minimum": 5,
+      "preferred": 7
+    },
+    {
+      "day": "Sat",
+      "shift": "Night",
+      "skill": "Caretaker",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Sun",
+      "shift": "Night",
+      "skill": "Caretaker",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Mon",
+      "shift": "Night",
+      "skill": "Trainee",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Tue",
+      "shift": "Night",
+      "skill": "Trainee",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Wed",
+      "shift": "Night",
+      "skill": "Trainee",
+      "minimum": 2,
+      "preferred": 2
+    },
+    {
+      "day": "Thu",
+      "shift": "Night",
+      "skill": "Trainee",
+      "minimum": 0,
+      "preferred": 1
+    },
+    {
+      "day": "Fri",
+      "shift": "Night",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 2
+    },
+    {
+      "day": "Sat",
+      "shift": "Night",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 1
+    },
+    {
+      "day": "Sun",
+      "shift": "Night",
+      "skill": "Trainee",
+      "minimum": 1,
+      "preferred": 1
+    }
+  ],
+  "shift_off_requests": [
+    {
+      "nurse_id": "CT_34",
+      "day": "Mon",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "CT_41",
+      "day": "Mon",
+      "shift": "Night"
+    },
+    {
+      "nurse_id": "NU_17",
+      "day": "Mon",
+      "shift": "Late"
+    },
+    {
+      "nurse_id": "HN_1",
+      "day": "Tue",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "HN_5",
+      "day": "Tue",
+      "shift": "Day"
+    },
+    {
+      "nurse_id": "NU_13",
+      "day": "Tue",
+      "shift": "Night"
+    },
+    {
+      "nurse_id": "NU_22",
+      "day": "Tue",
+      "shift": "Night"
+    },
+    {
+      "nurse_id": "NU_26",
+      "day": "Tue",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "TR_57",
+      "day": "Tue",
+      "shift": "Night"
+    },
+    {
+      "nurse_id": "TR_59",
+      "day": "Tue",
+      "shift": "Late"
+    },
+    {
+      "nurse_id": "CT_30",
+      "day": "Wed",
+      "shift": "Day"
+    },
+    {
+      "nurse_id": "CT_31",
+      "day": "Wed",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "CT_34",
+      "day": "Wed",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "CT_35",
+      "day": "Wed",
+      "shift": "Day"
+    },
+    {
+      "nurse_id": "CT_42",
+      "day": "Wed",
+      "shift": "Day"
+    },
+    {
+      "nurse_id": "CT_44",
+      "day": "Wed",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "CT_47",
+      "day": "Wed",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "HN_0",
+      "day": "Wed",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "HN_3",
+      "day": "Wed",
+      "shift": "Early"
+    },
+    {
+      "nurse_id": "NU_22",
+      "day": "Wed",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "CT_38",
+      "day": "Thu",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "HN_4",
+      "day": "Thu",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "HN_5",
+      "day": "Thu",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "NU_18",
+      "day": "Thu",
+      "shift": "Night"
+    },
+    {
+      "nurse_id": "NU_24",
+      "day": "Thu",
+      "shift": "Day"
+    },
+    {
+      "nurse_id": "TR_50",
+      "day": "Thu",
+      "shift": "Day"
+    },
+    {
+      "nurse_id": "TR_54",
+      "day": "Thu",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "TR_57",
+      "day": "Thu",
+      "shift": "Day"
+    },
+    {
+      "nurse_id": "CT_33",
+      "day": "Fri",
+      "shift": "Night"
+    },
+    {
+      "nurse_id": "CT_39",
+      "day": "Fri",
+      "shift": "Night"
+    },
+    {
+      "nurse_id": "CT_40",
+      "day": "Fri",
+      "shift": "Early"
+    },
+    {
+      "nurse_id": "CT_48",
+      "day": "Fri",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "CT_49",
+      "day": "Fri",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "HN_6",
+      "day": "Fri",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "NU_12",
+      "day": "Fri",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "NU_14",
+      "day": "Fri",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "NU_20",
+      "day": "Fri",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "NU_22",
+      "day": "Fri",
+      "shift": "Night"
+    },
+    {
+      "nurse_id": "NU_26",
+      "day": "Fri",
+      "shift": "Night"
+    },
+    {
+      "nurse_id": "TR_56",
+      "day": "Fri",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "CT_42",
+      "day": "Sat",
+      "shift": "Night"
+    },
+    {
+      "nurse_id": "CT_44",
+      "day": "Sat",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "HN_3",
+      "day": "Sat",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "NU_14",
+      "day": "Sat",
+      "shift": "Night"
+    },
+    {
+      "nurse_id": "NU_7",
+      "day": "Sat",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "TR_50",
+      "day": "Sat",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "TR_54",
+      "day": "Sat",
+      "shift": "Night"
+    },
+    {
+      "nurse_id": "CT_48",
+      "day": "Sun",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "HN_1",
+      "day": "Sun",
+      "shift": "Day"
+    },
+    {
+      "nurse_id": "HN_5",
+      "day": "Sun",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "NU_16",
+      "day": "Sun",
+      "shift": "Any"
+    },
+    {
+      "nurse_id": "TR_54",
+      "day": "Sun",
+      "shift": "Day"
+    }
+  ],
+  "sources": {
+    "scenario": {
+      "path": "inrc2/n060w8/Sc-n060w8.txt",
+      "sha256": "7652542eda15e8b05aaf71b0d3a5ad02bcb6ecbe69d4f6d5ad3fb38b6ae31053"
+    },
+    "history": {
+      "path": "inrc2/n060w8/H0-n060w8-1.txt",
+      "sha256": "2bc4f51d3a5716efbd5ddb2acdfd7728b6f1b776e39a7cd5612cfdcc43536209"
+    },
+    "week_data": {
+      "path": "inrc2/n060w8/WD-n060w8-2.txt",
+      "sha256": "f3b7a1190438c84035896985a9593b489179506c368c5e38518ede029cc8df36"
+    }
+  }
+}

@@ -1,17 +1,10 @@
 # Ready-to-use inputs
 
-Both solutions load these JSON files directly. No conversion is needed.
+All **690 inputs** are included: 23 scenario families × 3 initial histories × 10 weekly-data variants. Both solutions load the JSON directly. Browse [index.csv](index.csv) to choose a case.
 
-| File | Use |
-| --- | --- |
-| [n005w4/h0_wd1.json](n005w4/h0_wd1.json) | Starter/development case |
-| [n005w4/h0_wd0.json](n005w4/h0_wd0.json) | Experiment case |
-| [n005w4/h0_wd4.json](n005w4/h0_wd4.json) | Experiment case |
-| [n005w4/h1_wd5.json](n005w4/h1_wd5.json) | Experiment case |
-| [n005w4/h2_wd6.json](n005w4/h2_wd6.json) | Experiment case |
-| [n005w4/h2_wd9.json](n005w4/h2_wd9.json) | Experiment case |
+Files follow `converted/<scenario>/h<history>_wd<variant>.json`, for example [n005w4/h0_wd1.json](n005w4/h0_wd1.json).
 
-Each file contains five nurses over Monday–Sunday, following the [shared contract](../docs/input_contract.md). `h` is the initial-history variant; `wd` is the weekly-data variant.
+Each JSON schedules Monday–Sunday at week 0 using the selected initial history. The scenario retains its original four/eight-week horizon; `wd` identifies a data variant, not a chronological week. Source paths, hashes and declared scenario IDs are preserved, including `n021w4_2` inside the `n021w4` folder.
 
 ```python
 import json
@@ -20,4 +13,4 @@ from pathlib import Path
 instance = json.loads(Path("converted/n005w4/h0_wd1.json").read_text())
 ```
 
-The converter is retained in `rostering/inrc2.py` and available through `python -m rostering convert`. Raw inputs and hashes are recorded inside every converted file.
+Rebuild the dataset with `uv run python scripts/convert_dataset.py`. Existing identical conversions are retained; conflicting files are not overwritten. See [the shared contract](../docs/input_contract.md).

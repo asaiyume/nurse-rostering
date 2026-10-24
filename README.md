@@ -29,7 +29,7 @@ Provider/model settings are in `config/llm.json`; `.env` files are not loaded au
 
 ## Shared input and evaluation
 
-Both solutions can load the ready-made JSON files in [`converted/`](converted/README.md). The folder includes the starter case and all five experiment cases; the batch plans use these files directly.
+Both solutions can load the ready-made JSON files in [`converted/`](converted/README.md): all 690 combinations across 23 scenarios. [`converted/index.csv`](converted/index.csv) lists the files; the batch plans already use them directly.
 
 ```sh
 uv run python -m rostering evaluate --instance converted/n005w4/h0_wd1.json --roster outputs/ROSTER.json
@@ -37,7 +37,7 @@ uv run python -m rostering evaluate --instance converted/n005w4/h0_wd1.json --ro
 
 Each solution exports one record per nurse-day, including Off. Follow the [shared contract](docs/input_contract.md) and keep solver-specific metadata separate.
 
-The converter remains available for new cases: `uv run python -m rostering convert --history 0 --week-data 4 --out outputs/instances/h0_wd4.json`.
+Rebuild the complete set with `uv run python scripts/convert_dataset.py`. For one new case: `uv run python -m rostering convert --history 0 --week-data 4 --out outputs/instances/h0_wd4.json`.
 
 ## Solution B
 
