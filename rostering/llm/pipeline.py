@@ -10,14 +10,10 @@ import time
 import uuid
 
 from .api import APIError, completed, output_text, request_response, response_status, token_usage
-from .contracts import ROOT, validate_instance
-from .evaluate import evaluate
+from ..contracts import ROOT, validate_instance
+from ..evaluate import evaluate
+from ..io import write_json
 from .safeguards import CRITIQUE_INSTRUCTIONS, REVISION_INSTRUCTIONS, VARIANTS, attach_schema, roster_generation_schema, text_request
-
-
-def write_json(path: Path, value: object) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n")
 
 
 def build_request(instance: dict, config: dict, max_output_tokens: int, variant: str = "baseline") -> tuple[str, dict]:
@@ -40,7 +36,7 @@ def revision() -> dict:
         return {"commit": None, "dirty": None}
 
 
-def run_baseline(instance: dict, config: dict, output_root: Path, *, max_output_tokens: int = 16000, timeout: int = 240, dry_run: bool = False, variant: str = "baseline") -> tuple[Path, dict]:
+def run_roster(instance: dict, config: dict, output_root: Path, *, max_output_tokens: int = 16000, timeout: int = 240, dry_run: bool = False, variant: str = "baseline") -> tuple[Path, dict]:
     if max_output_tokens < 1 or timeout < 1:
         raise ValueError("Token limit and timeout must be positive")
     prompt, payload = build_request(instance, config, max_output_tokens, variant)
@@ -64,7 +60,7 @@ def run_baseline(instance: dict, config: dict, output_root: Path, *, max_output_
         "python_version": sys.version.split()[0],
         "source_sha256": {
             path.relative_to(ROOT).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
-            for pattern in ["nurse_llm/*.py", "schemas/*.json", "prompts/*.txt"]
+            for pattern in ["rostering/**/*.py", "schemas/*.json", "prompts/*.txt"]
             for path in sorted(ROOT.glob(pattern))
         },
         "git": revision(), "latency_seconds": None, "usage": None,
@@ -141,8 +137,8 @@ def run_baseline(instance: dict, config: dict, output_root: Path, *, max_output_
         write_json(directory / "roster.json", result)
         report = evaluate(instance, result)
         metadata["status"] = "valid_roster" if report["hard_valid"] else "invalid_roster"
-        if report["schema_valid"] and report["model_status"] != "candidate":
-            metadata["status"] = report["model_status"]
+        if report["schema_valid"] and report["solution_status"] != "candidate":
+            metadata["status"] = report["solution_status"]
     if not completed(response):
         metadata["status"] = "incomplete_response"
         report.update(evaluation_status="incomplete_response", hard_valid=False, soft_score=None)

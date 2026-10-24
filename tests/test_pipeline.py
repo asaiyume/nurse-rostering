@@ -10,11 +10,11 @@ import urllib.error
 
 from jsonschema import Draft202012Validator
 
-from nurse_llm.api import APIError, output_text, request_response
-from nurse_llm.contracts import ROOT, load_schema, validate_instance
-from nurse_llm.evaluate import evaluate
-from nurse_llm.inrc2 import convert, read_reference
-from nurse_llm.pipeline import run_baseline
+from rostering.llm.api import APIError, output_text, request_response
+from rostering.contracts import ROOT, load_schema, validate_instance
+from rostering.evaluate import evaluate
+from rostering.inrc2 import convert, read_reference
+from rostering.llm.pipeline import run_roster
 
 
 class RosterTests(unittest.TestCase):
@@ -129,8 +129,8 @@ class RosterTests(unittest.TestCase):
 
     def test_reference_never_enters_prompt_and_dry_run_never_calls_api(self):
         config = json.loads((ROOT / "config/llm.json").read_text())
-        with tempfile.TemporaryDirectory() as temp, patch("nurse_llm.pipeline.request_response") as request:
-            directory, metadata = run_baseline(self.instance, config, Path(temp), dry_run=True)
+        with tempfile.TemporaryDirectory() as temp, patch("rostering.llm.pipeline.request_response") as request:
+            directory, metadata = run_roster(self.instance, config, Path(temp), dry_run=True)
             request.assert_not_called()
             prompt = (directory / "prompt.txt").read_text()
             self.assertNotIn("Solution_H_", prompt)
@@ -142,8 +142,8 @@ class RosterTests(unittest.TestCase):
         config = json.loads((ROOT / "config/llm.json").read_text())
         for text, response_status, expected in [("", "completed", "empty_response"), ("```json\n{}\n```", "completed", "invalid_json"), (json.dumps(self.reference), "incomplete", "incomplete_response")]:
             response = {"model": "x-test-2", "status": response_status, "output": [{"type": "message", "content": [{"type": "output_text", "text": text}]}]}
-            with tempfile.TemporaryDirectory() as temp, patch("nurse_llm.pipeline.request_response", return_value=(response, 0.1)) as request:
-                directory, metadata = run_baseline(self.instance, config, Path(temp))
+            with tempfile.TemporaryDirectory() as temp, patch("rostering.llm.pipeline.request_response", return_value=(response, 0.1)) as request:
+                directory, metadata = run_roster(self.instance, config, Path(temp))
                 self.assertEqual(request.call_count, 1)
                 self.assertEqual(metadata["status"], expected)
                 self.assertEqual((directory / "response.txt").read_text(), text)

@@ -7,9 +7,10 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from nurse_llm.contracts import ROOT
-from nurse_llm.inrc2 import read_reference
-from nurse_llm.pipeline import run_baseline, write_json
+from rostering.contracts import ROOT
+from rostering.inrc2 import read_reference
+from rostering.llm.pipeline import run_roster
+from rostering.io import write_json
 
 
 class ReportTests(unittest.TestCase):
@@ -23,15 +24,15 @@ class ReportTests(unittest.TestCase):
             root = Path(temp)
             rows = []
             for variant in ["baseline", "structured", "critique", "combined"]:
-                with patch("nurse_llm.pipeline.request_response", return_value=(response, 0.1)):
-                    directory, metadata = run_baseline(instance, config, root / "runs", variant=variant)
+                with patch("rostering.llm.pipeline.request_response", return_value=(response, 0.1)):
+                    directory, metadata = run_roster(instance, config, root / "runs", variant=variant)
                 rows.append({"case_id": "one", "variant": variant, "repetition": 1, "feasibility_label": "known_feasible", "status": "valid_roster", "schema_valid": True, "hard_valid": True, "hard_violation_counts": {"minimum_coverage": 0}, "partial_soft_score": 150, "latency_seconds": metadata["latency_seconds"], "total_tokens": metadata["usage"]["total_tokens"], "api_call_count": metadata["api_call_count"], "run_dir": str(directory)})
             manifest = {"config": config, "prompt_sha256": "same", "cases": [{"id": "one", "baseline_request_sha256": "same"}], "plan": {"repetitions": 1, "max_output_tokens": 16000, "timeout_seconds": 240, "workers": 1}}
             for kind in ["baseline", "safeguards"]:
                 write_json(root / kind / "manifest.json", manifest)
                 write_json(root / kind / "results.json", [r for r in rows if (r["variant"] == "baseline") == (kind == "baseline")])
             argv = ["summarize_ablation.py", "--baseline", str(root / "baseline"), "--safeguards", str(root / "safeguards"), "--out", str(root / "report")]
-            with patch("sys.argv", argv), patch("nurse_llm.pipeline.request_response") as request, contextlib.redirect_stdout(io.StringIO()):
+            with patch("sys.argv", argv), patch("rostering.llm.pipeline.request_response") as request, contextlib.redirect_stdout(io.StringIO()):
                 main()
                 request.assert_not_called()
             result = json.loads((root / "report.json").read_text())

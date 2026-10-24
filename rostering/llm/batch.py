@@ -13,10 +13,11 @@ import time
 import uuid
 
 from .api import APIError
-from .contracts import ROOT
-from .evaluate import evaluate
-from .inrc2 import convert, read_reference
-from .pipeline import build_request, run_baseline, write_json
+from ..contracts import ROOT
+from ..evaluate import evaluate
+from ..inrc2 import convert, read_reference
+from .pipeline import build_request, run_roster
+from ..io import write_json
 from .safeguards import VARIANTS
 
 
@@ -104,7 +105,7 @@ def main() -> None:
         instance, label = cases[case_id]
         trial_root = directory / "runs" / case_id / variant / str(repetition)
         try:
-            run_dir, metadata = run_baseline(instance, config, trial_root, max_output_tokens=plan["max_output_tokens"], timeout=plan["timeout_seconds"], variant=variant)
+            run_dir, metadata = run_roster(instance, config, trial_root, max_output_tokens=plan["max_output_tokens"], timeout=plan["timeout_seconds"], variant=variant)
         except APIError:
             paths = list(trial_root.glob("*/metadata.json"))
             if not paths:

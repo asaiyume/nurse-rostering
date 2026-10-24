@@ -11,7 +11,7 @@ Solution B uses SoCLaas model `x-test-2` through its OpenAI-compatible Chat Comp
 | `critique` | Same baseline prompt. | One fresh LLM audit, then one final revision. | 3 |
 | `combined` | Structured generation. | One audit, then structured final revision. | 3 |
 
-`nurse_llm/safeguards.py` defines the generation schema and audit/revision instructions. `prompts/baseline.txt` defines the shared task and objective. The audit checks concrete nurse/day or day/shift/skill counterexamples for completeness, coverage, skills, transitions, requests and weekends. Revision is told to verify the audit because it may contain mistakes.
+`rostering/llm/safeguards.py` defines the generation schema and audit/revision instructions. `prompts/baseline.txt` defines the shared task and objective. The audit checks concrete nurse/day or day/shift/skill counterexamples for completeness, coverage, skills, transitions, requests and weekends. Revision is told to verify the audit because it may contain mistakes.
 
 The audit uses the same LLM in a fresh request. It is a bounded adaptation of [Self-Refine](https://arxiv.org/abs/2303.17651), rather than an independently trained verifier or a complete Chain-of-Verification implementation. The deterministic evaluator runs after all model calls; its counterexamples never enter the revision prompt.
 
@@ -45,7 +45,7 @@ The comparison measures schema validity, complete hard-valid rosters, violations
 
 ## Measured gateway behaviour
 
-The retained `python -m nurse_llm.probe` command tests both APIs with a valid schema containing a random enum absent from the conflicting plain-text prompt, then an invalid strict schema. It writes fresh evidence under ignored `outputs/`.
+The retained `python -m rostering.llm.probe` command tests both APIs with a valid schema containing a random enum absent from the conflicting plain-text prompt, then an invalid strict schema. It writes fresh evidence under ignored `outputs/`.
 
 On 24 October 2026, Responses ignored the schema request; Chat Completions produced the schema's exact enum value. Both APIs accepted the invalid schema. The new experiments therefore use Chat Completions consistently, while avoiding a claim that OpenAI's strict guarantees automatically apply to this gateway. Request conventions follow the [Structured Outputs documentation](https://developers.openai.com/api/docs/guides/structured-outputs).
 

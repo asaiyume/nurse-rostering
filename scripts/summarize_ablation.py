@@ -12,10 +12,10 @@ from jsonschema import Draft202012Validator
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from nurse_llm.batch import aggregate
-from nurse_llm.api import output_text
-from nurse_llm.evaluate import evaluate
-from nurse_llm.pipeline import write_json
+from rostering.llm.batch import aggregate
+from rostering.llm.api import output_text
+from rostering.evaluate import evaluate
+from rostering.io import write_json
 
 
 def main() -> None:

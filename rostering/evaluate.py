@@ -11,7 +11,7 @@ def evaluate(instance: dict, result: object) -> dict:
     report = {
         "instance_id": instance["instance_id"],
         "schema_valid": not errors, "schema_errors": errors,
-        "model_status": result.get("status") if isinstance(result, dict) else None,
+        "solution_status": result.get("status") if isinstance(result, dict) else None,
         "evaluation_status": "invalid_schema" if errors else "not_candidate",
         "roster_complete": False, "hard_valid": False,
         "hard_violation_counts": None, "hard_violations": [], "output_issues": [],

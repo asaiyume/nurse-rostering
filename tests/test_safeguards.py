@@ -7,12 +7,12 @@ from unittest.mock import patch
 
 from jsonschema import Draft202012Validator
 
-from nurse_llm.api import APIError, completed, output_text, token_usage
-from nurse_llm.batch import aggregate
-from nurse_llm.contracts import ROOT
-from nurse_llm.evaluate import evaluate
-from nurse_llm.pipeline import build_request, run_baseline
-from nurse_llm.safeguards import roster_generation_schema
+from rostering.llm.api import APIError, completed, output_text, token_usage
+from rostering.llm.batch import aggregate
+from rostering.contracts import ROOT
+from rostering.evaluate import evaluate
+from rostering.llm.pipeline import build_request, run_roster
+from rostering.llm.safeguards import roster_generation_schema
 
 
 def response(text):
@@ -23,7 +23,7 @@ class SafeguardTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.instance = json.loads((ROOT / "data/instances/n005w4_h0_wd1.json").read_text())
-        from nurse_llm.inrc2 import read_reference
+        from rostering.inrc2 import read_reference
         cls.roster = read_reference(cls.instance, ROOT / "inrc2/n005w4/Solution_H_0-WD_1-2-3-3/Sol-n005w4-1-0.txt")
         cls.config = json.loads((ROOT / "config/llm.json").read_text())
 
@@ -48,12 +48,12 @@ class SafeguardTests(unittest.TestCase):
     def test_combined_has_three_bounded_calls_and_no_evaluator_feedback(self):
         returned = [(response(json.dumps(self.roster)), 1.0), (response("Check Patrick's history-to-Monday transition; all counts otherwise agree."), 2.0), (response(json.dumps(self.roster)), 3.0)]
         observed_call_counts = []
-        with tempfile.TemporaryDirectory() as temp, patch("nurse_llm.pipeline.request_response", side_effect=returned) as request:
+        with tempfile.TemporaryDirectory() as temp, patch("rostering.llm.pipeline.request_response", side_effect=returned) as request:
             def observed_evaluate(*args):
                 observed_call_counts.append(request.call_count)
                 return evaluate(*args)
-            with patch("nurse_llm.pipeline.evaluate", side_effect=observed_evaluate):
-                directory, metadata = run_baseline(self.instance, self.config, Path(temp), variant="combined")
+            with patch("rostering.llm.pipeline.evaluate", side_effect=observed_evaluate):
+                directory, metadata = run_roster(self.instance, self.config, Path(temp), variant="combined")
             self.assertEqual(request.call_count, 3)
             self.assertEqual(observed_call_counts, [3, 3])
             self.assertEqual(metadata["api_call_count"], 3)
@@ -66,8 +66,8 @@ class SafeguardTests(unittest.TestCase):
             self.assertTrue((directory / "stages/generation/evaluation.json").exists())
 
     def test_failed_generation_does_not_trigger_critic_retry(self):
-        with tempfile.TemporaryDirectory() as temp, patch("nurse_llm.pipeline.request_response", return_value=(response(""), 1.0)) as request:
-            _, metadata = run_baseline(self.instance, self.config, Path(temp), variant="critique")
+        with tempfile.TemporaryDirectory() as temp, patch("rostering.llm.pipeline.request_response", return_value=(response(""), 1.0)) as request:
+            _, metadata = run_roster(self.instance, self.config, Path(temp), variant="critique")
             self.assertEqual(request.call_count, 1)
             self.assertEqual(metadata["status"], "empty_response")
             self.assertIn("critique_skipped", metadata)
@@ -81,9 +81,9 @@ class SafeguardTests(unittest.TestCase):
         self.assertFalse(completed(value))
 
     def test_api_failure_usage_is_unknown(self):
-        with tempfile.TemporaryDirectory() as temp, patch("nurse_llm.pipeline.request_response", side_effect=APIError("HTTP failure")):
+        with tempfile.TemporaryDirectory() as temp, patch("rostering.llm.pipeline.request_response", side_effect=APIError("HTTP failure")):
             with self.assertRaises(APIError):
-                run_baseline(self.instance, self.config, Path(temp))
+                run_roster(self.instance, self.config, Path(temp))
             metadata = json.loads(next(Path(temp).glob("*/metadata.json")).read_text())
             self.assertEqual(metadata["status"], "api_error")
             self.assertIsNone(metadata["usage"])
