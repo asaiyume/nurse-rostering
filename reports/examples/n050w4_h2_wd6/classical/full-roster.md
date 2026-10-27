@@ -1,0 +1,56 @@
+# Full classical final roster
+
+Each working cell is shift/skill. Missing and ambiguous records are shown explicitly; the JSON remains the complete canonical output.
+
+| Nurse | Mon | Tue | Wed | Thu | Fri | Sat | Sun |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| HN_0 | Night/Nurse | Night/HeadNurse | Night/HeadNurse | Night/HeadNurse | Night/Nurse | Night/Nurse | Night/Nurse |
+| HN_1 | Off | Early/HeadNurse | Early/HeadNurse | Early/HeadNurse | Early/HeadNurse | Late/HeadNurse | Night/HeadNurse |
+| HN_2 | Day/Nurse | Early/Nurse | Day/Nurse | Day/HeadNurse | Early/Nurse | Early/Nurse | Early/Nurse |
+| HN_3 | Day/Nurse | Late/Nurse | Late/Nurse | Late/Nurse | Late/Nurse | Late/Nurse | Late/Nurse |
+| HN_4 | Early/Nurse | Late/Nurse | Late/Nurse | Late/Nurse | Late/Nurse | Off | Day/Nurse |
+| HN_5 | Day/Nurse | Day/Nurse | Night/Nurse | Night/Nurse | Off | Day/Nurse | Off |
+| NU_6 | Late/Nurse | Off | Day/Nurse | Day/Nurse | Day/Nurse | Day/Caretaker | Early/Caretaker |
+| NU_7 | Late/Nurse | Off | Early/Nurse | Late/Nurse | Late/Caretaker | Late/Caretaker | Late/Caretaker |
+| NU_8 | Night/Nurse | Night/Nurse | Night/Nurse | Night/Nurse | Night/Caretaker | Night/Caretaker | Night/Caretaker |
+| NU_9 | Night/Caretaker | Off | Day/Nurse | Early/Nurse | Early/Nurse | Night/Caretaker | Off |
+| NU_10 | Early/Caretaker | Night/Nurse | Off | Day/Nurse | Day/Nurse | Off | Day/Caretaker |
+| NU_11 | Off | Early/Caretaker | Early/Caretaker | Early/Caretaker | Early/Caretaker | Off | Off |
+| NU_12 | Day/Caretaker | Early/Caretaker | Day/Caretaker | Early/Caretaker | Day/Caretaker | Off | Off |
+| NU_13 | Day/Caretaker | Day/Caretaker | Early/Caretaker | Early/Caretaker | Early/Caretaker | Off | Off |
+| NU_14 | Late/Caretaker | Late/Caretaker | Late/Caretaker | Late/Caretaker | Late/Caretaker | Off | Off |
+| NU_15 | Late/Caretaker | Night/Caretaker | Night/Caretaker | Night/Caretaker | Night/Caretaker | Off | Off |
+| NU_16 | Off | Early/Caretaker | Late/Caretaker | Late/Caretaker | Off | Off | Off |
+| NU_17 | Off | Day/Caretaker | Night/Caretaker | Night/Caretaker | Off | Off | Off |
+| NU_18 | Off | Late/Caretaker | Off | Day/Caretaker | Day/Caretaker | Off | Off |
+| NU_19 | Off | Night/Caretaker | Off | Off | Day/Caretaker | Off | Off |
+| NU_20 | Off | Late/Caretaker | Off | Off | Off | Off | Off |
+| NU_21 | Off | Off | Off | Off | Off | Off | Off |
+| NU_22 | Off | Off | Off | Off | Off | Off | Off |
+| NU_23 | Off | Off | Off | Off | Off | Off | Off |
+| NU_24 | Off | Off | Off | Off | Off | Off | Off |
+| NU_25 | Off | Off | Off | Off | Off | Off | Off |
+| NU_26 | Off | Off | Off | Off | Off | Off | Off |
+| NU_27 | Off | Off | Off | Off | Off | Off | Off |
+| CT_28 | Off | Off | Off | Off | Off | Off | Off |
+| CT_29 | Off | Off | Off | Off | Off | Off | Off |
+| CT_30 | Off | Off | Off | Off | Off | Off | Off |
+| CT_31 | Off | Off | Off | Off | Off | Off | Off |
+| CT_32 | Off | Off | Off | Off | Off | Off | Off |
+| CT_33 | Off | Off | Off | Off | Off | Off | Off |
+| CT_34 | Off | Off | Off | Off | Off | Off | Off |
+| CT_35 | Off | Off | Off | Off | Off | Off | Off |
+| CT_36 | Off | Day/Caretaker | Off | Day/Caretaker | Off | Off | Off |
+| CT_37 | Night/Caretaker | Off | Late/Caretaker | Late/Caretaker | Off | Off | Off |
+| CT_38 | Late/Caretaker | Night/Caretaker | Night/Caretaker | Night/Caretaker | Off | Off | Off |
+| CT_39 | Early/Caretaker | Early/Caretaker | Day/Caretaker | Early/Caretaker | Early/Caretaker | Late/Caretaker | Off |
+| TR_40 | Night/Trainee | Night/Trainee | Off | Day/Trainee | Early/Trainee | Early/Trainee | Late/Trainee |
+| TR_41 | Day/Trainee | Early/Trainee | Early/Trainee | Late/Trainee | Late/Trainee | Night/Trainee | Night/Trainee |
+| TR_42 | Late/Trainee | Late/Trainee | Late/Trainee | Night/Trainee | Night/Trainee | Off | Off |
+| TR_43 | Off | Day/Trainee | Day/Trainee | Off | Day/Trainee | Off | Off |
+| TR_44 | Off | Off | Off | Off | Off | Off | Off |
+| TR_45 | Off | Off | Off | Off | Off | Off | Off |
+| TR_46 | Off | Off | Off | Off | Off | Off | Off |
+| TR_47 | Off | Off | Off | Off | Off | Off | Off |
+| TR_48 | Off | Off | Off | Off | Off | Off | Off |
+| TR_49 | Off | Off | Off | Off | Off | Off | Off |

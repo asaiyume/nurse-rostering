@@ -3,6 +3,6 @@
   "base_url": "https://soclaas-api.comp.nus.edu.sg/v1",
   "api_style": "chat_completions",
   "model": "x-test-2",
-  "reasoning_effort": "none",
+  "reasoning_effort": "high",
   "api_key_env": "SOCLAAS_API_KEY"
 }

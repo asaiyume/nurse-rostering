@@ -1,0 +1,889 @@
+{
+  "schema_version": "1.0",
+  "status": "candidate",
+  "explanation": "Hard-feasible roster revised to cover Thu Early Trainee; all nurse-days included and minimum coverage met without optimizing soft fields.",
+  "roster": [
+    {
+      "nurse_id": "HN_0",
+      "day": "Mon",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_0",
+      "day": "Tue",
+      "shift": "Early",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "HN_0",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_0",
+      "day": "Thu",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_0",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_0",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_0",
+      "day": "Sun",
+      "shift": "Late",
+      "skill": "HeadNurse"
+    },
+    {
+      "nurse_id": "HN_1",
+      "day": "Mon",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_1",
+      "day": "Tue",
+      "shift": "Day",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "HN_1",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_1",
+      "day": "Thu",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_1",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_1",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_1",
+      "day": "Sun",
+      "shift": "Night",
+      "skill": "HeadNurse"
+    },
+    {
+      "nurse_id": "HN_2",
+      "day": "Mon",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_2",
+      "day": "Tue",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_2",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_2",
+      "day": "Thu",
+      "shift": "Late",
+      "skill": "HeadNurse"
+    },
+    {
+      "nurse_id": "HN_2",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_2",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "HN_2",
+      "day": "Sun",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_3",
+      "day": "Mon",
+      "shift": "Early",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_3",
+      "day": "Tue",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_3",
+      "day": "Wed",
+      "shift": "Early",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_3",
+      "day": "Thu",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_3",
+      "day": "Fri",
+      "shift": "Early",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_3",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_3",
+      "day": "Sun",
+      "shift": "Early",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_4",
+      "day": "Mon",
+      "shift": "Day",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_4",
+      "day": "Tue",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_4",
+      "day": "Wed",
+      "shift": "Day",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_4",
+      "day": "Thu",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_4",
+      "day": "Fri",
+      "shift": "Day",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_4",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_4",
+      "day": "Sun",
+      "shift": "Day",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_5",
+      "day": "Mon",
+      "shift": "Late",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_5",
+      "day": "Tue",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_5",
+      "day": "Wed",
+      "shift": "Late",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_5",
+      "day": "Thu",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_5",
+      "day": "Fri",
+      "shift": "Late",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_5",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_5",
+      "day": "Sun",
+      "shift": "Late",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_6",
+      "day": "Mon",
+      "shift": "Night",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_6",
+      "day": "Tue",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_6",
+      "day": "Wed",
+      "shift": "Night",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_6",
+      "day": "Thu",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_6",
+      "day": "Fri",
+      "shift": "Night",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_6",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_6",
+      "day": "Sun",
+      "shift": "Night",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_7",
+      "day": "Mon",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_7",
+      "day": "Tue",
+      "shift": "Early",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_7",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_7",
+      "day": "Thu",
+      "shift": "Early",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_7",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_7",
+      "day": "Sat",
+      "shift": "Early",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_7",
+      "day": "Sun",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_8",
+      "day": "Mon",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_8",
+      "day": "Tue",
+      "shift": "Day",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_8",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_8",
+      "day": "Thu",
+      "shift": "Day",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_8",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_8",
+      "day": "Sat",
+      "shift": "Day",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_8",
+      "day": "Sun",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_9",
+      "day": "Mon",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_9",
+      "day": "Tue",
+      "shift": "Late",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_9",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_9",
+      "day": "Thu",
+      "shift": "Late",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_9",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_9",
+      "day": "Sat",
+      "shift": "Late",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_9",
+      "day": "Sun",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_10",
+      "day": "Mon",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_10",
+      "day": "Tue",
+      "shift": "Night",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_10",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_10",
+      "day": "Thu",
+      "shift": "Night",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_10",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "NU_10",
+      "day": "Sat",
+      "shift": "Night",
+      "skill": "Nurse"
+    },
+    {
+      "nurse_id": "NU_10",
+      "day": "Sun",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_11",
+      "day": "Mon",
+      "shift": "Night",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_11",
+      "day": "Tue",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_11",
+      "day": "Wed",
+      "shift": "Early",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_11",
+      "day": "Thu",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_11",
+      "day": "Fri",
+      "shift": "Early",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_11",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_11",
+      "day": "Sun",
+      "shift": "Early",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_12",
+      "day": "Mon",
+      "shift": "Early",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_12",
+      "day": "Tue",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_12",
+      "day": "Wed",
+      "shift": "Day",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_12",
+      "day": "Thu",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_12",
+      "day": "Fri",
+      "shift": "Late",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_12",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_12",
+      "day": "Sun",
+      "shift": "Day",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_13",
+      "day": "Mon",
+      "shift": "Day",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_13",
+      "day": "Tue",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_13",
+      "day": "Wed",
+      "shift": "Night",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_13",
+      "day": "Thu",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_13",
+      "day": "Fri",
+      "shift": "Night",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_13",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_13",
+      "day": "Sun",
+      "shift": "Late",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_14",
+      "day": "Mon",
+      "shift": "Late",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_14",
+      "day": "Tue",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_14",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_14",
+      "day": "Thu",
+      "shift": "Day",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_14",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_14",
+      "day": "Sat",
+      "shift": "Night",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_14",
+      "day": "Sun",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_15",
+      "day": "Mon",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_15",
+      "day": "Tue",
+      "shift": "Late",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_15",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_15",
+      "day": "Thu",
+      "shift": "Night",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "CT_15",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_15",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "CT_15",
+      "day": "Sun",
+      "shift": "Night",
+      "skill": "Caretaker"
+    },
+    {
+      "nurse_id": "TR_16",
+      "day": "Mon",
+      "shift": "Early",
+      "skill": "Trainee"
+    },
+    {
+      "nurse_id": "TR_16",
+      "day": "Tue",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_16",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_16",
+      "day": "Thu",
+      "shift": "Day",
+      "skill": "Trainee"
+    },
+    {
+      "nurse_id": "TR_16",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_16",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_16",
+      "day": "Sun",
+      "shift": "Day",
+      "skill": "Trainee"
+    },
+    {
+      "nurse_id": "TR_17",
+      "day": "Mon",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_17",
+      "day": "Tue",
+      "shift": "Early",
+      "skill": "Trainee"
+    },
+    {
+      "nurse_id": "TR_17",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_17",
+      "day": "Thu",
+      "shift": "Night",
+      "skill": "Trainee"
+    },
+    {
+      "nurse_id": "TR_17",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_17",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_17",
+      "day": "Sun",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_18",
+      "day": "Mon",
+      "shift": "Night",
+      "skill": "Trainee"
+    },
+    {
+      "nurse_id": "TR_18",
+      "day": "Tue",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_18",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_18",
+      "day": "Thu",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_18",
+      "day": "Fri",
+      "shift": "Night",
+      "skill": "Trainee"
+    },
+    {
+      "nurse_id": "TR_18",
+      "day": "Sat",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_18",
+      "day": "Sun",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_19",
+      "day": "Mon",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_19",
+      "day": "Tue",
+      "shift": "Night",
+      "skill": "Trainee"
+    },
+    {
+      "nurse_id": "TR_19",
+      "day": "Wed",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_19",
+      "day": "Thu",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_19",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_19",
+      "day": "Sat",
+      "shift": "Early",
+      "skill": "Trainee"
+    },
+    {
+      "nurse_id": "TR_19",
+      "day": "Sun",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_20",
+      "day": "Mon",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_20",
+      "day": "Tue",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_20",
+      "day": "Wed",
+      "shift": "Day",
+      "skill": "Trainee"
+    },
+    {
+      "nurse_id": "TR_20",
+      "day": "Thu",
+      "shift": "Early",
+      "skill": "Trainee"
+    },
+    {
+      "nurse_id": "TR_20",
+      "day": "Fri",
+      "shift": "Off",
+      "skill": null
+    },
+    {
+      "nurse_id": "TR_20",
+      "day": "Sat",
+      "shift": "Late",
+      "skill": "Trainee"
+    },
+    {
+      "nurse_id": "TR_20",
+      "day": "Sun",
+      "shift": "Off",
+      "skill": null
+    }
+  ]
+}

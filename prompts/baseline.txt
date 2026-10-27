@@ -6,11 +6,8 @@ Hard constraints:
 3. A working record covers exactly one skill that the nurse possesses. Multi-skilled nurses cannot fill two coverage requirements in one shift.
 4. Respect forbidden_successions between consecutive days, including the history last_shift to Monday. Off breaks a working-shift succession.
 
-Soft objectives for this pilot, after satisfying all hard constraints:
-- Each nurse missing from preferred coverage costs 30. Extra coverage has no penalty.
-- Each violated shift_off_request costs 10. Any requests the whole day off; a named shift requests only that shift off.
-- If a nurse's contract has complete_weekends=true, working exactly one of Saturday/Sunday costs 30.
-Minimise the sum of these three penalties. The remaining contract and consecutive-day fields are retained for future experiments but are not enforced as hard constraints or scored in this pilot. Do not apply four/eight-week total limits as one-week limits.
+Task scope: hard-constraint feasibility only, matching Solution A. Return any roster satisfying all four hard rules; there is no soft objective or optimality requirement. Staffing above the minimum is allowed.
+The shared input retains preferred coverage, shift_off_requests, complete-weekend flags, contract totals, streak limits and history counters for compatibility. Ignore these fields for scheduling: do not optimize preferences, fairness, weekends or workload, and do not treat shift-off requests as mandatory leave. Use history last_shift only for the transition into Monday. Do not impose consecutive-day/night/rest limits, weekly hours or four/eight-week totals. This is one independent Monday-Sunday week; do not advance history or infer additional weeks from a WD variant number.
 
 Output shape:
 {"schema_version":"1.0","status":"candidate","explanation":"Brief description only.","roster":[{"nurse_id":"exact input identifier","day":"Mon","shift":"exact shift name or Off","skill":"one exact skill name, or null for Off"}]}

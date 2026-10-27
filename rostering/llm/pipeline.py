@@ -36,9 +36,14 @@ def revision() -> dict:
         return {"commit": None, "dirty": None}
 
 
-def run_roster(instance: dict, config: dict, output_root: Path, *, max_output_tokens: int = 16000, timeout: int = 240, dry_run: bool = False, variant: str = "baseline") -> tuple[Path, dict]:
-    if max_output_tokens < 1 or timeout < 1:
-        raise ValueError("Token limit and timeout must be positive")
+def run_roster(instance: dict, config: dict, output_root: Path, *, max_output_tokens: int = 32000, audit_output_tokens: int = 16000, timeout: float | None = None, dry_run: bool = False, variant: str = "baseline", total_timeout: float | None = None) -> tuple[Path, dict]:
+    if max_output_tokens < 1 or audit_output_tokens < 1:
+        raise ValueError("Token limits must be positive")
+    if timeout is not None and not 0 < timeout < float("inf"):
+        raise ValueError("Request timeout must be finite and positive")
+    if total_timeout is not None and not 0 < total_timeout < float("inf"):
+        raise ValueError("Total timeout must be finite and positive")
+    trial_started = time.perf_counter()
     prompt, payload = build_request(instance, config, max_output_tokens, variant)
     started = datetime.now(timezone.utc)
     # Random suffix avoids overwriting results from concurrent or repeated runs.
@@ -50,12 +55,16 @@ def run_roster(instance: dict, config: dict, output_root: Path, *, max_output_to
     (directory / "uv.lock").write_text((ROOT / "uv.lock").read_text())
     metadata = {
         "run_id": directory.name, "instance_id": instance["instance_id"],
-        "variant": variant, "prompt_version": "baseline_v1",
+        "variant": variant, "prompt_version": "hard_only_v1",
+        "mode": "hard_constraints_only", "soft_method": None,
+        "objective_scope": "Feasibility only; no soft objective",
         "started_at_utc": started.isoformat(), "status": "dry_run" if dry_run else "started",
         "requested_model": config["model"], "provider": config["provider"],
         "base_url": config["base_url"], "api_style": config["api_style"],
         "request_sha256": hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest(),
         "timeout_seconds": timeout, "max_output_tokens": max_output_tokens,
+        "audit_output_tokens": audit_output_tokens,
+        "total_timeout_seconds": total_timeout, "runtime_seconds": None,
         "decoding": {"temperature": "provider_default", "seed": "not_requested", "reasoning": config.get("reasoning_effort", "provider_default")},
         "python_version": sys.version.split()[0],
         "source_sha256": {
@@ -71,13 +80,19 @@ def run_roster(instance: dict, config: dict, output_root: Path, *, max_output_to
     if dry_run:
         return directory, metadata
     def call_stage(name: str, request: dict) -> dict:
+        stage_timeout = timeout
+        if total_timeout is not None:
+            remaining = total_timeout - (time.perf_counter() - trial_started)
+            if remaining <= 0:
+                raise APIError("Total trial time budget exhausted before " + name)
+            stage_timeout = remaining if timeout is None else min(timeout, remaining)
         stage_dir = directory / "stages" / name
         write_json(stage_dir / "request.json", request)
         metadata["api_call_count"] += 1
         write_json(directory / "metadata.json", metadata)
         call_started = time.perf_counter()
         try:
-            response, latency = request_response(config, request, timeout)
+            response, latency = request_response(config, request, stage_timeout)
         except APIError:
             metadata["stages"].append({"name": name, "latency_seconds": time.perf_counter() - call_started, "usage": {}, "response_status": "api_error", "returned_model": None, "usage_missing": True})
             write_json(directory / "metadata.json", metadata)
@@ -94,7 +109,7 @@ def run_roster(instance: dict, config: dict, output_root: Path, *, max_output_to
             if completed(response) and output_text(response).strip():
                 candidate = output_text(response)
                 audit_prompt = CRITIQUE_INSTRUCTIONS + "\nINSTANCE:\n" + json.dumps(instance) + "\nCANDIDATE:\n" + candidate
-                audit = call_stage("critique", text_request(config, audit_prompt, 8000))
+                audit = call_stage("critique", text_request(config, audit_prompt, audit_output_tokens))
                 if completed(audit) and output_text(audit).strip():
                     revision_prompt = prompt + "\n" + REVISION_INSTRUCTIONS + "\nCANDIDATE:\n" + candidate + "\nLLM AUDIT:\n" + output_text(audit)
                     revision_payload = text_request(config, revision_prompt, max_output_tokens)
@@ -111,6 +126,7 @@ def run_roster(instance: dict, config: dict, output_root: Path, *, max_output_to
             latency_seconds=sum(stage["latency_seconds"] for stage in metadata["stages"]),
             usage=({key: sum(stage["usage"].get(key, 0) for stage in metadata["stages"]) for key in ["input_tokens", "output_tokens", "total_tokens"]} if any(stage["usage"] for stage in metadata["stages"]) else None),
             usage_incomplete=True,
+            runtime_seconds=time.perf_counter() - trial_started,
         )
         write_json(directory / "metadata.json", metadata)
         raise APIError(f"{error}. Run artifacts: {directory}") from None
@@ -153,5 +169,6 @@ def run_roster(instance: dict, config: dict, output_root: Path, *, max_output_to
     if metadata["stages"][0]["response_status"] not in {"completed", "stop"}:
         generation_report.update(evaluation_status="incomplete_response", hard_valid=False, soft_score=None)
     write_json(directory / "stages/generation/evaluation.json", generation_report)
+    metadata["runtime_seconds"] = time.perf_counter() - trial_started
     write_json(directory / "metadata.json", metadata)
     return directory, metadata

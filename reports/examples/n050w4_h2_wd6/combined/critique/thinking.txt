@@ -1,0 +1,281 @@
+We need audit candidate. Need be careful. We cannot execute code. Need manually check constraints. Task says hard-constraint feasibility only. Need check:
+1 every nurse-day occurs once, identifiers real, Off null skill.
+2 Count coverage by day/shift/skill, identify deficits vs min. Nurse covers one skill only; overstaff allowed.
+3 Check skills and every transition, including history into Monday; Off breaks successions.
+4 No additional constraints: ignore preferred coverage, shift-off requests, complete weekends, fairness, streak limits, full-horizon workload fields. History last_shift affects Monday; other history counters do not impose constraints.
+
+Need produce concise audit <=1500 words. Need identify confirmed inconsistencies/counterexamples. We need audit candidate thoroughly but manually. Candidate seems assigns most active nurses fixed shifts entire week; many off. Need check:
+- Roster includes every nurse (50) each day? It appears yes, each nurse Mon-Sun. Need ensure exactly once per nurse-day. Candidate lists 50 nurses x7 =350 entries? Need check no duplicates? It appears each nurse all 7 days. Need maybe verify all IDs real. Off null skill yes for off entries? Need scan. Some Off have null. Active skills match nurse skills? Need verify. Potential skill mismatches? Need check active assignments: HN_0 Night HeadNurse yes HN has HeadNurse. HN_1 Late HeadNurse yes. HN_2 Early HeadNurse yes. HN_3 Day HeadNurse yes. NU_6 Late Nurse yes; NU_10 Day Caretaker (NU_10 has Nurse,Caretaker) okay. NU_11 Night Nurse ok. CT etc caretaker. TR trainee. No mismatch likely.
+
+Coverage: Need count per day/shift/skill from candidate and compare minimum. Candidate assigns fixed shifts to certain nurses:
+Active:
+HN_0 Night HeadNurse all 7
+HN_1 Late HeadNurse all 7
+HN_2 Early HeadNurse all 7
+HN_3 Day HeadNurse all 7
+NU_6 Late Nurse all 7
+NU_7 Early Nurse all 7
+NU_8 Early Nurse all 7
+NU_9 Night Nurse all 7
+NU_10 Day Caretaker all 7 (skill Caretaker)
+NU_11 Night Nurse all 7
+NU_12 Late Nurse all 7
+NU_14 Day Nurse all 7
+NU_15 Day Nurse all 7
+NU_16 Day Nurse all 7
+NU_24 Late Nurse all 7
+CT_28 Late Caretaker all 7
+CT_29 Early Caretaker all 7
+CT_30 Night Caretaker all 7
+CT_31 Early Caretaker all 7
+CT_32 Early Caretaker all 7
+CT_33 Late Caretaker all 7
+CT_34 Night Caretaker all 7
+CT_35 Early Caretaker all 7
+CT_36 Night Caretaker all 7
+CT_37 Day Caretaker all 7
+CT_38 Late Caretaker all 7
+CT_39 Day Caretaker all 7
+TR_40 Night Trainee all 7
+TR_41 Early Trainee all 7
+TR_42 Day Trainee all 7
+TR_45 Late Trainee all 7
+Others Off. Need count by day/shift/skill. Since fixed all week, each day same counts per shift/skill. Let's tally by shift+skill:
+Early HeadNurse: HN_2 =1 per day.
+Early Nurse: NU_7, NU_8 =2 per day.
+Early Caretaker: CT_29, CT_31, CT_32, CT_35 =4 per day.
+Early Trainee: TR_41 =1 per day.
+
+Day HeadNurse: HN_3 =1 per day.
+Day Nurse: NU_14, NU_15, NU_16 =3 per day.
+Day Caretaker: NU_10 (Caretaker), CT_37, CT_39 =3 per day? NU_10 assigned Day Caretaker, plus CT_37, CT_39 =3.
+Day Trainee: TR_42 =1 per day.
+
+Late HeadNurse: HN_1 =1 per day.
+Late Nurse: NU_6, NU_12, NU_24 =3 per day.
+Late Caretaker: CT_28, CT_33, CT_38 =3 per day.
+Late Trainee: TR_45 =1 per day.
+
+Night HeadNurse: HN_0 =1 per day.
+Night Nurse: NU_9, NU_11 =2 per day.
+Night Caretaker: CT_30, CT_34, CT_36 =3 per day.
+Night Trainee: TR_40 =1 per day.
+
+Need compare per day/shift/skill min varies by day. There might be deficits on days where min > constant counts, e.g Early HeadNurse Tue-Fri min1 but Mon/Sat/Sun min0. Candidate has 1 every day, over ok. Early Nurse min Mon1 Tue1 Wed1 Thu1 Fri2 Sat1 Sun1; candidate 2 per day. On Fri min2 exactly, others over ok. Early Caretaker min Mon2 Tue4 Wed2 Thu4 Fri3 Sat0 Sun1; candidate 4 every day. Tue/Thu min4 OK; Fri min3 over; Mon/Wed over; Sat over; Sun over. Early Trainee min Mon0 Tue1 Wed1 Thu0 Fri1 Sat1 Sun0; candidate 1 every day over on Mon/Thu/Sun okay; but on days min1 yes.
+Day HeadNurse min Thu1; candidate 1 every day, okay.
+Day Nurse min Mon3 Tue1 Wed3 Thu2 Fri2 Sat1 Sun1; candidate 3 every day, okay.
+Day Caretaker min Mon2 Tue3 Wed2 Thu2 Fri3 Sat1 Sun1; candidate 3 every day, okay.
+Day Trainee min Mon1 Tue1 Wed1 Thu1 Fri1 Sat0 Sun0; candidate 1 every day, Mon-Fri okay over Sat/Sun okay.
+Late HeadNurse min Sat1; candidate 1 every day, okay.
+Late Nurse min Mon2 Tue2 Wed2 Thu3 Fri2 Sat1 Sun1; candidate 3 every day, okay (Thu exactly 3).
+Late Caretaker min Mon3 Tue3 Wed3 Thu3 Fri2 Sat2 Sun1; candidate 3 every day, okay (Thu exact; Fri over; Sat over; Sun over).
+Late Trainee min Mon1 Tue1 Wed1 Thu1 Fri1 Sat0 Sun1; candidate 1 every day, Sat over okay, Sun exact.
+Night HeadNurse min Tue1 Wed1 Thu1 Sun1; candidate1 every day, ok.
+Night Nurse min Mon2 Tue2 Wed2 Thu2 Fri1 Sat1 Sun1; candidate2 every day, ok.
+Night Caretaker min Mon2 Tue3 Wed3 Thu3 Fri2 Sat2 Sun1; candidate3 every day, Tue-Thu exact, others over.
+Night Trainee min Mon1 Tue1 Wed0 Thu1 Fri1 Sat1 Sun1; candidate1 every day, Wed over, all min met.
+So coverage all minimums met with no deficits? Need check candidate perhaps all fixed shifts overstaff; no deficit. Need state no coverage deficits confirmed. But wait count skill is per assignment skill. Candidate may assign NU_10 as Caretaker even though also Nurse. That's allowed one skill only. Need count HeadNurse vs Nurse? The coverage skill demand may be met by nurses qualified for skill. Candidate HN_0 assigned HeadNurse despite also Nurse; one skill only. Good.
+
+Transition constraints: Need check forbidden successions and shift consecutive min/max? The hard constraints include shift_types min_consecutive and max_consecutive? Need interpret. Need check "every transition, including history into Monday; Off breaks successions." In INRC2 likely:
+- For each shift type, consecutive assignments of same shift must be within min/max consecutive? Actually shift types have min_consecutive, max_consecutive. Need enforce that any run of same shift (possibly across history) has length between min and max? Also forbidden successions between shifts.
+- Off breaks successions: Off ends run.
+- Need include history last_shift and consecutive_same_shift. Candidate has fixed shift all 7 for active nurses, so run length 7 for each. Shift max consecutive: Early max5, Day max28, Late max5, Night max5. Thus active nurses assigned Early/Late/Night all 7 violate max_consecutive if run length > max. But need check min too. Also candidate active run from prior history could exceed. Off for others has long off but contract consecutive days off min/max? Task says "no additional constraints: this is hard-constraint feasibility only. Ignore preferred coverage, shift-off requests, complete weekends, fairness, streak limits and full-horizon workload fields. History last_shift affects Monday; other history counters do not impose constraints." Wait "streak limits" ignored? Need parse. Hard constraints include contracts with consecutive_work_days, consecutive_days_off, total_assignments, max weekends, complete weekends. The instruction says ignore ... complete weekends, fairness, streak limits and full-horizon workload fields. "streak limits" likely refers consecutive work days? Need not impose? Need read carefully: "Check that no additional constraints were imposed: this is hard-constraint feasibility only. Ignore preferred coverage, shift-off requests, complete weekends, fairness, streak limits and full-horizon workload fields. History last_shift affects Monday; the other history counters do not impose constraints." The "streak limits" may refer contract consecutive work/off? It says "full-horizon workload fields" maybe total_assignments. They explicitly say history counters (except last_shift) do not impose constraints. Also ignore complete weekends, fairness, streak limits. Need know which constraints are hard in this audit. The instance includes shift min/max consecutive, forbidden successions, contracts with total_assignments, consecutive_work_days, consecutive_days_off, max_working_weekends, complete_weekends. The audit instruction says hard-constraint feasibility only. It says ignore preferred coverage, shift-off requests, complete weekends, fairness, streak limits and full-horizon workload fields. This likely means ignore soft constraints and also some contract fields? Need infer from benchmark? It specifically says "History last_shift affects Monday; the other history counters do not impose constraints." It also says "Check skills and every transition, including history into Monday; Off breaks successions." That indicates transition constraints from shift types min/max and forbidden successions are in scope. "streak limits" could be contract consecutive_work_days? They may call "streak limits" soft? Need avoid inventing constraints from unused fields. The contract fields like total_assignments, consecutive_work_days, consecutive_days_off, max weekends, complete weekends may be soft or hard? The problem statement says "hard-constraint feasibility only. Ignore preferred coverage, shift-off requests, complete weekends, fairness, streak limits and full-horizon workload fields." Hmm "streak limits" likely the shift min_consecutive/max_consecutive? Actually those are "shift streak limits" maybe? But then step 3 explicitly says "Check skills and every transition, including history into Monday; Off breaks successions." That includes transition constraints. Shift min_consecutive/max_consecutive are transition/streak constraints? We need determine. Candidate fixed same shift 7 days for Early/Late/Night. If shift max_consecutive enforced, many violations. But if "streak limits" ignored, maybe not. Yet shift_types includes min_consecutive and max_consecutive. The instruction "Check skills and every transition" likely includes forbidden successions and possibly min/max consecutive for same shift. "Off breaks successions." They mention "including history into Monday", so need check last_shift to Monday for forbidden succession and same shift run. So likely shift min/max consecutive are hard and in scope. But the phrase "Ignore ... streak limits" might mean ignore contract consecutive_work_days? Let's parse original: "Check that no additional constraints were imposed: this is hard-constraint feasibility only. Ignore preferred coverage, shift-off requests, complete weekends, fairness, streak limits and full-horizon workload fields. History last_shift affects Monday; the other history counters do not impose constraints." In INRC2, hard constraints likely include:
+- coverage minimum
+- assignment skills
+- single assignment per day
+- forbidden shift successions
+- min/max consecutive shifts (shift type)
+- maybe "consecutive work days" from contracts? Actually INRC2 problem includes hard constraints? Let's recall: In INRC-II, constraints include:
+1. Demand coverage (minimum)
+2. Assignments: one shift per nurse per day, skill compatibility
+3. Workload: max/min assignments? Maybe contracts?
+4. Consecutive shifts of same type min/max
+5. Forbidden shift successions
+6. Days off: min/max consecutive days off, min/max consecutive work days
+7. Weekends: complete weekends, max working weekends
+Some are hard? In the original, all are hard? The instruction says ignore preferred coverage, shift-off requests, complete weekends, fairness, streak limits and full-horizon workload fields. That suggests only some constraints considered hard in this audit: coverage minimums, skills, every transition (forbidden successions, shift min/max?), history last_shift. It explicitly says ignore complete weekends, streak limits, full-horizon workload. "streak limits" likely includes consecutive_work_days and consecutive_days_off? But "every transition" may include shift-specific min/max consecutive. Need be precise.
+
+Maybe this is from a benchmark where candidate audit should check hard constraints only, and the instance has many contract fields that are "soft" in the scenario? The prompt says "Ignore ... complete weekends, fairness, streak limits and full-horizon workload fields." So do not check contract consecutive work/off? It says "History last_shift affects Monday; the other history counters do not impose constraints." That means only last_shift from history for transition. The shift_types min_consecutive/max_consecutive are not "history counters" but shift patterns. Are they "streak limits"? The term "streak limits" could refer to consecutive_same_shift min/max. But step 3 says "Check ... every transition" and "Off breaks successions." Need include forbidden successions and maybe min/max consecutive? Let's look at candidate: It assigns fixed shifts all week. If max consecutive shift enforced, huge violations. The candidate explanation "Fixed-shift assignments cover all minimums; remaining nurses are Off." Maybe candidate intentionally ignores max consecutive and contracts. Audit should catch if those are hard. The prompt's step 3 "Check skills and every transition, including history into Monday; Off breaks successions." It doesn't explicitly say check min_consecutive/max_consecutive, but "every transition" could be successions between consecutive days (forbidden_successions). Min/max consecutive are run-length constraints, not transitions exactly. The phrase "Off breaks successions" relates to consecutive same shift run and forbidden successions? Off breaks both. Need determine if min_consecutive and max_consecutive are part of transition constraints. In INRC2, min/max consecutive for a shift type: if nurse works a shift, they must work it for at least min and at most max consecutive days. This is a hard constraint. The audit instruction mentions "streak limits" as ignored—could be exactly these min/max consecutive? But then why include shift_types with min/max? Maybe because they are part of instance but not to check? The phrase "Ignore preferred coverage, shift-off requests, complete weekends, fairness, streak limits and full-horizon workload fields." "Streak limits" is broad, likely means min/max consecutive work days / days off and shift streaks. But step 3 says check every transition, which is about forbidden successions only (e.g., Late->Early). "Off breaks successions" means if Off then no forbidden succession. The shift min/max consecutive might be "consecutive same shift" and is a streak limit, so ignore. Hmm.
+
+Let's read exact: "Check skills and every transition, including history into Monday; Off breaks successions." Transition = pair of shifts on consecutive days. Forbidden_successions lists allowed? It gives {"Early": [], "Day": [], "Late": ["Early","Day"], "Night": ["Early","Day","Late"]}. It only defines forbidden next shifts for previous shift. This is a transition constraint. "Off breaks successions" means an Off between shifts breaks any succession, so no forbidden pair across Off. That is for forbidden successions and perhaps for same shift consecutive. The shift_types min_consecutive/max_consecutive govern runs, which are affected by Off. But "Off breaks successions" might be to avoid treating e.g., Night Mon, Off Tue, Early Wed as Night->Early? Since Off breaks, no issue. For run length, Off breaks run too.
+
+Need check candidate for forbidden successions. Since active nurses have same shift all 7 days, transitions among active days are same shift same shift, which is not forbidden (forbidden only different shifts). Off for many: Off->Off, Off after active? Need check history into Monday for active nurses: If last_shift and Monday shift form forbidden succession. For Off nurses, if history last_shift? Off on Monday breaks? Need check every nurse. Forbidden successions: Late forbids Early, Day. Night forbids Early, Day, Late. Early/Day have no forbidden. Need check each active nurse history last_shift to Monday shift:
+HN_0 hist Night -> Mon Night: same, not forbidden (Night forbids Early/Day/Late, not Night). But also max consecutive Night? History consecutive_same_shift=2, plus Mon-Sun Night =9 consecutive. If max consecutive Night 5, violation. But if ignore streak, okay.
+HN_1 hist Late -> Mon Late: same, okay for forbidden.
+HN_2 hist Off -> Mon Early: Off breaks, okay.
+HN_3 hist Off -> Mon Day: okay.
+NU_6 hist Late -> Mon Late: same.
+NU_7 hist Off -> Mon Early.
+NU_8 Off -> Early.
+NU_9 hist Night -> Mon Night same.
+NU_10 Off -> Day.
+NU_11 hist Night -> Mon Night same.
+NU_12 hist Early -> Mon Late: Early->Late is not forbidden (Late forbids Early/Day after Late; Early no forbids). But if min/max? Late starts new run after Early; transition Early->Late allowed. However history consecutive_same_shift for Early 4, then Late new shift; no issue for forbidden.
+NU_14 Off -> Day.
+NU_15 Off -> Day.
+NU_16 Off -> Day.
+NU_24 hist Late -> Mon Late same.
+CT_28 Off -> Late.
+CT_29 Off -> Early.
+CT_30 Off -> Night.
+CT_31 Off -> Early.
+CT_32 Off -> Early.
+CT_33 hist Late -> Mon Late same.
+CT_34 hist Night -> Mon Night same.
+CT_35 hist Day -> Mon Early: Day->Early is allowed? Forbidden_successions: Day: [] so no.
+CT_36 Off -> Night.
+CT_37 hist Day -> Mon Day same.
+CT_38 hist Late -> Mon Late same.
+CT_39 Off -> Day.
+TR_40 hist Night -> Mon Night same.
+TR_41 Off -> Early.
+TR_42 Off -> Day.
+TR_45 hist Late -> Mon Late same.
+Off nurses with history last_shift active to Mon Off: Off breaks; no issue. Need check any Off Monday with last_shift? Off itself not a shift succession? Off breaks successions; no constraint on active->Off. So no forbidden succession violations, except maybe if a nurse changes shift during week? Candidate active nurses same shift entire week, off nurses all off. No within-week different shifts. So forbidden successions none confirmed. But if shift consecutive min/max enforced, many violations.
+
+Need check skills: active skill must be in nurse's skills. Need verify each active:
+- HN_0 HeadNurse yes
+- HN_1 HeadNurse yes
+- HN_2 HeadNurse yes
+- HN_3 HeadNurse yes
+- NU_6 Nurse yes
+- NU_7 Nurse yes
+- NU_8 Nurse yes
+- NU_9 Nurse yes
+- NU_10 Caretaker yes (has Nurse,Caretaker)
+- NU_11 Nurse yes
+- NU_12 Nurse yes
+- NU_14 Nurse yes
+- NU_15 Nurse yes
+- NU_16 Nurse yes
+- NU_24 Nurse yes
+- CT_28..39 Caretaker yes
+- TR_40,41,42,45 Trainee yes.
+No skill mismatches. All off skill null? Need scan candidate Off entries: HN_4, HN_5, NU_13, NU_17, NU_18, NU_19, NU_20, NU_21, NU_22, NU_23, NU_25, NU_26, NU_27, TR_43, TR_44, TR_46, TR_47, TR_48, TR_49 all null. Yes. Note TR_45 is active Late Trainee, not off. Off entries have null.
+
+Every nurse-day occurs once: Need ensure all 50 nurses have 7 days, no missing duplicates. The candidate roster seems full. Could there be a duplicate nurse-day? Since each nurse has exactly one entry for each day; no duplicates visible. Need maybe count 50*7=350. We can state checked IDs and days: all 50 real IDs, each Mon-Sun exactly once. Need be confident. Candidate includes all 50? List IDs: HN_0-5 (6), NU_6-27 (22? 6-27 inclusive 22), total 28; CT_28-39 (12) total 40; TR_40-49 (10) total 50. Each appears Mon-Sun. Yes.
+
+Coverage counts: Need maybe list deficits none. But need identify each deficit against minimum. Since none, state no deficits. But maybe candidate misses HeadNurse Night on Tue/Wed/Thu/Sun? HN_0 Night HeadNurse all days yes. Early HeadNurse on Tue-Fri: HN_2 Early HeadNurse all days yes. Day HeadNurse Thu: HN_3 Day HeadNurse all days yes. Late HeadNurse Sat: HN_1 Late HeadNurse all days yes. Good.
+Potential issue: Candidate assigns HN_0 HeadNurse skill on Night, but coverage for HeadNurse Night min Tue etc. Yes.
+Potential issue: Nurse coverage on Early Fri min2: NU_7, NU_8 =2. Good.
+Caretaker coverage: Early Tue/Thu min4: CT_29, CT_31, CT_32, CT_35 =4. Good. Late Thu min3: CT_28, CT_33, CT_38 =3. Good. Night Tue-Thu min3: CT_30, CT_34, CT_36 =3. Good. Day Fri min3: NU_10, CT_37, CT_39 =3. Good.
+Trainee coverage: Early Tue/Wed/Fri/Sat min1: TR_41. Day Mon-Fri min1: TR_42. Late Mon-Fri/Sun min1: TR_45. Night Mon/Tue/Thu/Fri/Sat/Sun min1: TR_40. All met. Overstaff on off min days allowed.
+
+Now, if shift min_consecutive/max_consecutive are in scope, candidate has many violations. Need decide. The prompt step 3 says "Check skills and every transition, including history into Monday; Off breaks successions." It doesn't explicitly mention min/max consecutive. But "every transition" might mean forbidden successions only. The instance has shift_types with min_consecutive, max_consecutive. If we don't check them, we might miss hard constraints. But the audit instruction says "Ignore ... streak limits". The shift min/max are literally consecutive limits, i.e., streak limits. So likely ignore. But wait, the instruction "Check skills and every transition" - if shift min/max are ignored, what transitions remain? Forbidden successions. That's a transition constraint. Off breaks successions. History last_shift affects Monday. Yes, that fits. They deliberately say ignore streak limits, so we should not flag fixed 7-day run as violation. Need mention not auditing streak limits per instruction. However, shift min/max are in shift_types, not contract. Are they "streak limits"? The term "streak limits" could be general. The instruction "History last_shift affects Monday; the other history counters do not impose constraints" means we only use last_shift for forbidden succession. The consecutive_same_shift history counter is ignored. If shift min/max were enforced, consecutive_same_shift history counter would matter to check run length (as candidate HN_0 Night history 2 + 7 =9 > max5). But instruction explicitly says other history counters do not impose constraints. That strongly suggests shift min/max consecutive are NOT to be checked, because otherwise history consecutive_same_shift would matter. They say only last_shift affects Monday. So yes, ignore min/max consecutive and streak limits. Good. So candidate passes forbidden succession. Need maybe check "Off breaks successions" for history: for nurses with last_shift Off, Monday assignment no succession. For active->Off? no issue. For Off->active? breaks. For within-week active same shift, no forbidden. So no forbidden succession violations. Need state no confirmed transition violations under in-scope forbidden successions. Could there be history last_shift Late -> Monday Early/Day for any active? Check NU_12 hist Early -> Mon Late allowed. CT_35 hist Day -> Mon Early allowed. No hist Late to Early/Day? HN_1 Late->Late; NU_6 Late->Late; NU_24 Late->Late; CT_33 Late->Late; CT_38 Late->Late; TR_45 Late->Late. Hist Night to Early/Day/Late? HN_0 Night->Night; NU_9 Night->Night; NU_11 Night->Night; CT_34 Night->Night; TR_40 Night->Night. None. Hist Day no forbidden. So no.
+
+Need consider "nurse covers one skill only" in coverage counting: We counted each assignment under its assigned skill. Candidate assigns some multi-skilled nurses to one skill. Good. Need check no nurse has multiple assignments same day? Each nurse-day once. Good.
+
+Need maybe check "Off has a null skill": yes.
+
+Need maybe check "all identifiers are real": yes. Need maybe check every nurse-day occurs once: yes.
+
+Need maybe check "no additional constraints imposed": We should not flag contract workload/complete weekends etc. Candidate has many Off all week for some; if consecutive_days_off max etc. But ignore. Need explicitly state not treating those as violations. Also max_working_weekends etc ignore. Candidate has active nurses working all weekend, maybe max weekends? Ignore. Complete weekends? Ignore. Total assignments? Active nurses 7 assignments, many contracts min 15 etc. Ignore full-horizon workload fields. Note candidate only week0; total assignments 7 for active, less than FullTime min 15 but ignored per instruction. Need not flag.
+
+Potential other constraint: shift min_consecutive? Ignored. But what about "forbidden_successions" itself: We checked. Need maybe check same shift repeated 7 days: Is there a hidden max_consecutive in shift_types? If instruction says ignore streak limits, no. But maybe "every transition" includes min_consecutive? Hmm. Let's double-check prompt wording: "Check skills and every transition, including history into Monday; Off breaks successions." In INRC2, "forbidden successions" are called "forbidden shift type successions". The shift_types min_consecutive/max_consecutive are not transitions but consecutive assignments. The prompt's step 3 says "every transition" not "consecutive runs". So likely only forbidden. The explicit "Off breaks successions" is exactly for forbidden_successions: if Off between shifts, no succession. So we are fine.
+
+Need maybe check if candidate violates forbidden succession within active nurses? All active nurses same shift all days. But what about a nurse assigned Off? Off breaks. No changes. So none.
+
+Potential coverage deficits if we account for "nurse covers one skill only" but candidate assigns NU_10 as Caretaker; does that prevent NU_10 from covering Nurse? Yes, but coverage for Nurse still met by other nurses. Fine.
+
+Need maybe count coverage by day/shift/skill. We can present counts compactly as constant per day with exceptions? Since counts same each day, but minimum varies. Need "Count coverage by day/shift/skill, and identify each deficit". We can state per shift/skill counts are constant across Mon-Sun: Early HN 1, Nurse 2, Caretaker 4, Trainee 1; Day HN 1, Nurse 3, Caretaker 3, Trainee 1; Late HN 1, Nurse 3, Caretaker 3, Trainee 1; Night HN 1, Nurse 2, Caretaker 3, Trainee 1. Then compare to minima: All minima ≤ these counts for every day. Need maybe list specific days where min equals/less: We can state no deficits. To be thorough, maybe mention high minimums met: Early Caretaker Tue/Thu min4 met by 4; Late Nurse Thu min3 met by 3; Night Caretaker Tue-Thu min3 met by3; etc. No deficits. Need not list all 112 coverage entries, but maybe enough.
+
+Need maybe mention overstaff allowed. No soft penalties.
+
+Potential issue: Candidate status "candidate" schema_version 1.0; explanation "Fixed-shift assignments cover all minimums; remaining nurses are Off." This explanation may be inaccurate if shift max consecutive ignored; but no issue.
+
+Let's consider if there are any confirmed inconsistencies with hard constraints other than ignored. Could there be skill null on active? No. Off null yes. Could there be an Off entry with non-null skill? Need scan candidate Off entries: HN_4 Mon Off null; all Off null. Good.
+
+Could there be a nurse missing on a day? Let's manually verify some days? Candidate list ordered by nurse, each nurse 7 days. For each nurse, entries Mon Tue Wed Thu Fri Sat Sun. Looks complete. Need ensure no nurse_id not in instance: all HN_0..5, NU_6..27, CT_28..39, TR_40..49. Real. No duplicates? Each nurse appears exactly once per day. Need check within each nurse no duplicate day. Since sequence, yes. Could there be nurse assigned twice same day? No. Could there be an extra nurse-day? 350 entries seems exactly. We can state verified.
+
+Potential transition: "including history into Monday" for Off nurses with last_shift active: Monday Off. Does Off break succession? If last_shift Late, Monday Off, Tuesday Off, ... no issue. But what about last_shift Night and Monday Off: Off breaks, no forbidden succession because no next shift. Off itself is not in forbidden_successions. Good.
+
+Potential transition: For active nurse HN_0 history Night, Monday Night, then Night all week. Forbidden successions: Night forbids Early, Day, Late. Same shift Night is allowed. So no violation. HN_1 Late all week: Late->Late allowed. Late forbids Early,Day; same Late allowed. Early/Day have no forbids. So no.
+
+What about shift min_consecutive? If not ignored, e.g., Off all week for HN_4. But history HN_4 last_shift Day consecutive_same_shift 2. Monday Off. Off breaks. Then Off all week. For Off, consecutive_days_off history maybe 0, plus 7 =? Contract consecutive_days_off max3 for FullTime? HN_4 PartTime max5. 7 Off > max5. But ignore. Active shifts 7 consecutive maybe max5 for Early/Late/Night. But ignore. The audit should perhaps mention "Under the stated audit scope, I did not treat shift-run max/min, contract streak, weekend, workload, or request fields as constraints." That clarifies. If the expected answer does enforce shift max_consecutive, they'd want flag. But instruction explicitly says ignore streak limits. Need maybe hedge: "If shift-type consecutive min/max were intended as hard, there are numerous violations (e.g., HN_0 Night 7 days exceeds Night max 5), but per instruction those streak limits are excluded." However the prompt says "Do not invent constraints from unused fields." Could mentioning hypothetical be okay? It says "Distinguish an unverified concern from a confirmed inconsistency." We can note unverified concern if ambiguous. But final audit should be concise and not confuse. Since user explicitly says ignore streak limits, we should not flag. Maybe mention as excluded, not violation. But "streak limits" could be ambiguous; to be safe, include a one-line caveat: "I have not treated shift-type consecutive min/max or contract streaks as hard, per the instruction to ignore streak limits; if those are in scope, the fixed 7-day runs would violate e.g., HN_0 Night max 5." But the user said "Do not invent constraints from unused fields" and "hard-constraint feasibility only." If shift_types min/max are in instance but not unused? Hmm. The instruction says ignore streak limits, so they are unused for audit. Mentioning hypothetical might be seen as unsupported. But distinguishing unverified concern: maybe not needed.
+
+Let's re-read step 3: "Check skills and every transition, including history into Monday; Off breaks successions." It doesn't say check min/max consecutive. Step 4: "Check that no additional constraints were imposed: this is hard-constraint feasibility only. Ignore preferred coverage, shift-off requests, complete weekends, fairness, streak limits and full-horizon workload fields. History last_shift affects Monday; the other history counters do not impose constraints." This is very clear: ignore streak limits. So no flag. We should not even mention hypothetical unless necessary. But maybe "streak limits" refers only contract consecutive_work_days, not shift min/max? The phrase "full-horizon workload fields" likely refers total_assignments and working_weekends; "streak limits" likely consecutive_work_days/off. Shift min/max are "consecutive same shift" and could be considered streak limits. Also "other history counters" includes consecutive_work_days/off and consecutive_same_shift. The latter is used for shift min/max. They say other history counters do not impose constraints, so shift min/max cannot be checked because they'd require consecutive_same_shift. Thus ignore. Good.
+
+Need maybe check "min_consecutive" for shift types could also require if a nurse starts Early on Monday and works one day then Off, min 2 violation. But candidate active fixed all 7; min ok. But max violated. Since ignored, no.
+
+Potential issue: "A nurse covers one skill only" means each nurse-day assignment has one skill. Candidate does. No multi-skill assignment. Good.
+
+Potential issue: "staffing above the minimum is allowed." Candidate overstaffs many. Good.
+
+Need structure final audit:
+- Summary: Candidate is feasible under specified hard-constraint scope; no confirmed inconsistencies. All minimum coverage met; no forbidden successions; skills OK; Off null; completeness OK.
+- 1. Completeness/IDs/Off: verified 50 nurses x 7 days exactly once; all IDs from instance; all Off entries null skill; active skills are within each nurse's skill set. Maybe list examples of active skill checks? Not needed but can mention multi-skilled NU_10 assigned Caretaker allowed.
+- 2. Coverage: Provide table of counts per shift/skill (constant each day) and note all minima met. Table:
+Shift | HeadNurse | Nurse | Caretaker | Trainee
+Early: 1,2,4,1
+Day: 1,3,3,1
+Late: 1,3,3,1
+Night:1,2,3,1
+Need clarify counts are per day; same for all Mon-Sun. Then compare: e.g., highest minima: Early Caretaker Tue/Thu min4 = count4; Late Nurse Thu min3 = count3; Night Caretaker Tue-Thu min3 = count3; all other minima lower. No deficits. Overstaff allowed.
+But wait Day HeadNurse count 1 per day, min only Thu 1. Early HeadNurse count1, min Tue-Fri1. Late HeadNurse count1, min Sat1. Night HeadNurse count1, min Tue/Wed/Thu/Sun1. All met.
+- 3. Skills/transitions: Active assignments use valid skills. Forbidden successions: Within week, every active nurse has constant shift; no forbidden pair. History into Monday: list any potential? We can state checked all last_shift->Mon; none are forbidden. Examples: HN_0 Night→Night, HN_1 Late→Late, NU_12 Early→Late (allowed), CT_35 Day→Early (allowed); Off breaks for last_shift Off. Off days break successions. No violations.
+- 4. Excluded constraints: Per instruction, did not evaluate preferred coverage, shift-off requests, complete weekends, fairness, streak limits, full-horizon workload fields, or history counters other than last_shift. Candidate's many Off days / 7-day runs would be relevant only to excluded streak/workload rules, not counted as violations here.
+- Conclusion: No confirmed inconsistency; unverified concerns? Maybe none. Could mention "No unverified concern remains within scope." Maybe "If the intended scope included excluded streak max, there would be violations, but that is outside the requested audit." Hmm maybe avoid.
+
+Need be concise. At most 1500 words; final likely 500-800.
+
+Let's ensure table counts correct:
+Early:
+HeadNurse: HN_2 =1
+Nurse: NU_7, NU_8 =2
+Caretaker: CT_29, CT_31, CT_32, CT_35 =4
+Trainee: TR_41 =1
+Day:
+HeadNurse: HN_3 =1
+Nurse: NU_14, NU_15, NU_16 =3
+Caretaker: NU_10, CT_37, CT_39 =3
+Trainee: TR_42 =1
+Late:
+HeadNurse: HN_1 =1
+Nurse: NU_6, NU_12, NU_24 =3
+Caretaker: CT_28, CT_33, CT_38 =3
+Trainee: TR_45 =1
+Night:
+HeadNurse: HN_0 =1
+Nurse: NU_9, NU_11 =2
+Caretaker: CT_30, CT_34, CT_36 =3
+Trainee: TR_40 =1
+
+Check candidate active NU_10 Day Caretaker: yes. What about NU_6 Late Nurse, NU_12 Late Nurse, NU_24 Late Nurse. Good.
+All counts per day same? Yes, active nurses assigned all 7 days same shift. So counts constant. Off nurses all 7 days off. Good.
+
+Minimum coverage compare:
+Early HeadNurse: Mon0 Tue1 Wed1 Thu1 Fri1 Sat0 Sun0. Count1 >= all, over Mon/Sat/Sun.
+Early Nurse: Mon1 Tue1 Wed1 Thu1 Fri2 Sat1 Sun1. Count2 >= all, meets Fri exact, over others.
+Early Caretaker: Mon2 Tue4 Wed2 Thu4 Fri3 Sat0 Sun1. Count4 >= all, meets Tue/Thu exact, over others.
+Early Trainee: Mon0 Tue1 Wed1 Thu0 Fri1 Sat1 Sun0. Count1 >= all, meets needed days, over Mon/Thu/Sun.
+Day HeadNurse: Thu1 only. Count1 >= all, over other days.
+Day Nurse: Mon3 Tue1 Wed3 Thu2 Fri2 Sat1 Sun1. Count3 >= all, meets Mon/Wed exact, over others.
+Day Caretaker: Mon2 Tue3 Wed2 Thu2 Fri3 Sat1 Sun1. Count3 >= all, meets Tue/Fri exact, over others.
+Day Trainee: Mon1 Tue1 Wed1 Thu1 Fri1 Sat0 Sun0. Count1 >= all, meets Mon-Fri, over Sat/Sun.
+Late HeadNurse: Sat1. Count1 >= all.
+Late Nurse: Mon2 Tue2 Wed2 Thu3 Fri2 Sat1 Sun1. Count3 >= all, meets Thu exact, over others.
+Late Caretaker: Mon3 Tue3 Wed3 Thu3 Fri2 Sat2 Sun1. Count3 >= all, meets Mon-Thu exact, over others.
+Late Trainee: Mon1 Tue1 Wed1 Thu1 Fri1 Sat0 Sun1. Count1 >= all, meets except Sat over.
+Night HeadNurse: Tue1 Wed1 Thu1 Sun1. Count1 >= all.
+Night Nurse: Mon2 Tue2 Wed2 Thu2 Fri1 Sat1 Sun1. Count2 >= all, meets Mon-Thu exact, over others.
+Night Caretaker: Mon2 Tue3 Wed3 Thu3 Fri2 Sat2 Sun1. Count3 >= all, meets Tue-Thu exact, over others.
+Night Trainee: Mon1 Tue1 Wed0 Thu1 Fri1 Sat1 Sun1. Count1 >= all, over Wed.
+No deficits.
+
+Need maybe mention "coverage is by skill, not by nurse qualifications; multi-skilled nurses contribute only to assigned skill." We did.
+
+Potential issue: Candidate uses HN_3 Day HeadNurse on Mon/Tue/Wed/Fri/Sat/Sun when min0; overstaff allowed. Fine.
+
+Potential issue: "Off has a null skill" - yes. Active skills not null. Good.
+
+Potential issue: "all identifiers are real" - yes. No unknown IDs. "Every nurse-day occurs once" - yes.
+
+Potential issue: "no additional constraints were imposed" - We must not impose that Off must have null skill? That's required. We must not impose contract total assignments etc. We can explicitly say ignored.
+
+Need final answer with "Confirmed inconsistencies: none within specified scope." Maybe "Unverified concerns: none; excluded fields not evaluated." Good.
+
+Let's craft final in concise audit style. Use bullet/table.
+
+Need avoid saying "I executed code" etc. No tools.
+
+Let's produce final.

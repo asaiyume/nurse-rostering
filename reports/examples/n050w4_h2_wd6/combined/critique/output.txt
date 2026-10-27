@@ -1,0 +1,38 @@
+**Audit result: no confirmed hard-constraint inconsistency within the specified scope.**
+
+### 1. Nurse-day completeness / IDs / Off skill
+- All roster `nurse_id`s are real instance IDs: `HN_0`–`HN_5`, `NU_6`–`NU_27`, `CT_28`–`CT_39`, `TR_40`–`TR_49`.
+- Each of the 50 nurses appears exactly once for each of Mon–Sun. No missing or duplicate nurse-day entries observed.
+- Every `Off` entry has `"skill": null`. No non-null skill appears on an Off entry.
+- Every active assignment uses a skill held by that nurse. Multi-skilled nurses are assigned to only one skill on that day, e.g. `NU_10` is assigned as `Caretaker`, which is permitted.
+
+### 2. Coverage counts and deficits
+Candidate uses fixed shift/skill assignments for active nurses, so counts are the same each day. Per day:
+
+| Shift | HeadNurse | Nurse | Caretaker | Trainee |
+|---|---:|---:|---:|---:|
+| Early | 1 | 2 | 4 | 1 |
+| Day | 1 | 3 | 3 | 1 |
+| Late | 1 | 3 | 3 | 1 |
+| Night | 1 | 2 | 3 | 1 |
+
+Comparing these counts to the supplied minimums for every day/shift/skill:
+- No deficits found.
+- The tightest covered minimums are met exactly where relevant, e.g. `Early/Caretaker` on Tue/Thu requires 4 and has 4; `Late/Nurse` on Thu requires 3 and has 3; `Night/Caretaker` on Tue/Wed/Thu requires 3 and has 3.
+- All other cases are over minimum or zero-minimum, which is allowed. No coverage counterexample exists.
+
+### 3. Skills and transitions
+- Skill compatibility: confirmed for all active assignments.
+- Forbidden successions within the week: every active nurse keeps the same shift all seven days, so no within-week shift-to-shift forbidden pair occurs. Off breaks successions.
+- History into Monday: checked `last_shift` against Monday assignments. No forbidden succession is present. Examples:
+  - `HN_0`: Night → Night allowed.
+  - `HN_1`: Late → Late allowed.
+  - `NU_12`: Early → Late allowed.
+  - `CT_35`: Day → Early allowed.
+  - Nurses with history `Off` break the succession into Monday.
+- No `Late` history is followed by Monday `Early`/`Day`; no `Night` history is followed by Monday `Early`/`Day`/`Late`.
+
+### 4. Excluded constraints
+Per instruction, I did not treat preferred coverage, shift-off requests, complete weekends, fairness, streak limits, full-horizon workload fields, or history counters other than `last_shift` as hard constraints. The candidate’s long fixed-shift runs or many consecutive Off days are therefore not counted as violations here.
+
+**Conclusion:** The candidate is hard-feasible under the requested audit scope. No confirmed coverage deficit, skill mismatch, missing/duplicate nurse-day, invalid Off skill, or forbidden succession was found.
