@@ -1,0 +1,23 @@
+**Audit result: not hard-feasible.** One confirmed minimum-coverage deficit exists.
+
+1. **Nurse-day structure / identifiers / Off skill**
+   - Confirmed: 21 real nurse IDs × 7 days = 147 records. Each nurse appears exactly once per day; no duplicate or missing nurse-day found.
+   - All nurse IDs, days, shifts, and skills are from the instance.
+   - Every `Off` record has `skill: null`.
+   - Every non-Off assignment uses exactly one skill, and that skill is in the nurse’s allowed skill list.
+
+2. **Coverage by day/shift/skill**
+   - I tallied all day/shift/skill minimum cells.
+   - **Confirmed deficit:** `Thu / Early / Trainee` has minimum 1, candidate count 0. Specific counterexample: on Thursday Early, the only assignment is `NU_7` as `Nurse`; no Trainee is assigned to Thursday Early.
+   - All other positive minimum demands are met. Overstaffing was not penalized. No other coverage deficit found.
+
+3. **Skills and transitions**
+   - Skills: no incompatible skill assignment found.
+   - Transitions: I checked all adjacent nurse-day transitions plus `history.last_shift` into Monday, with `Off` breaking successions.
+   - No forbidden succession violation found. Potentially relevant history-to-Monday cases are allowed, e.g. `HN_0` Night→Mon Off, `NU_5` Day→Mon Late, `NU_6` Late→Mon Night, `CT_11` Night→Mon Night, `TR_18` Night→Mon Night. No `Late`→`Early`/`Day` or `Night`→`Early`/`Day`/`Late` violation was confirmed.
+
+4. **Additional constraints / ignored fields**
+   - Per instruction, I did not treat preferred coverage, shift-off requests, complete weekends, fairness, streak limits, or full-horizon workload fields as hard constraints.
+   - I also treated shift `min_consecutive`/`max_consecutive` as ignored streak limits. If those were intended as hard constraints, there would be many violations (e.g. `NU_3` has isolated Early assignments on Mon/Wed/Fri/Sun, below Early `min_consecutive=2`), but that is outside the stated audit scope.
+
+**Conclusion:** The candidate fails hard feasibility because of the confirmed `Thu Early Trainee` minimum-coverage deficit (minimum 1, assigned 0). No other confirmed hard-constraint inconsistency was found under the stated ignore rules.

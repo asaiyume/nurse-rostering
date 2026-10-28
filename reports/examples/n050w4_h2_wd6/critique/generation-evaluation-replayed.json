@@ -1,0 +1,29 @@
+{
+  "instance_id": "n050w4_H0-n050w4-2_WD-n050w4-6_week0",
+  "schema_valid": false,
+  "schema_errors": [
+    "$: None is not of type 'object'"
+  ],
+  "solution_status": null,
+  "evaluation_status": "invalid_schema",
+  "roster_complete": false,
+  "hard_valid": false,
+  "hard_violation_counts": null,
+  "hard_violations": [],
+  "output_issues": [],
+  "soft_score": null,
+  "soft_scope": {
+    "included": [
+      "preferred_coverage",
+      "shift_off_requests",
+      "complete_weekends"
+    ],
+    "excluded": [
+      "consecutive_assignments",
+      "consecutive_days_off",
+      "total_assignments",
+      "total_working_weekends"
+    ],
+    "is_full_inrc2_score": false
+  }
+}

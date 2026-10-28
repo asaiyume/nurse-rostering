@@ -1,0 +1,80 @@
+{
+  "run_id": "20261027T170615460860Z_d975459f",
+  "instance_id": "n050w4_H0-n050w4-2_WD-n050w4-6_week0",
+  "variant": "structured",
+  "prompt_version": "hard_only_v1",
+  "mode": "hard_constraints_only",
+  "soft_method": null,
+  "objective_scope": "Feasibility only; no soft objective",
+  "started_at_utc": "2026-10-27T17:06:15.460860+00:00",
+  "status": "valid_roster",
+  "requested_model": "x-test-2",
+  "provider": "soclaas",
+  "base_url": "https://soclaas-api.comp.nus.edu.sg/v1",
+  "api_style": "chat_completions",
+  "request_sha256": "54c7b1ff860ca4188cbd74b102f1643094bd3958420a12ca30487410aa337525",
+  "timeout_seconds": null,
+  "max_output_tokens": 32000,
+  "audit_output_tokens": 16000,
+  "total_timeout_seconds": null,
+  "runtime_seconds": 272.51405262499975,
+  "decoding": {
+    "temperature": "provider_default",
+    "seed": "not_requested",
+    "reasoning": "high"
+  },
+  "python_version": "3.13.14",
+  "source_sha256": {
+    "rostering/__init__.py": "f8b885154f50524b8aa0d1c471d5504401fd9382b3e781d06826d13a4d43a1b6",
+    "rostering/__main__.py": "84cf80179d948f4afcbe8c9bb09ab92dd841b0ec6e101bea65fd9882642f647e",
+    "rostering/classical/__init__.py": "462d24b8bde09e93be4c2f7d2f894883966abf765a0b2701360933617d423458",
+    "rostering/classical/__main__.py": "33846f16345b3cff2032884bb9b70b567aef520180f88b85285d6963eab1995c",
+    "rostering/contracts.py": "f0c6f61018f22798d36ac9ca2532853bc7ac31bd16746e6b4bc5fe107365c8a8",
+    "rostering/evaluate.py": "043f0af4a21d4d63e67d74e7fcc9ec34f7db9f2e6020d6994dd483cc7a575281",
+    "rostering/inrc2.py": "d3416f0368a9a2128e4dc5fa62699826cf9152daed810959117c907804ab09d2",
+    "rostering/io.py": "9eda60b866437a18241587044e0dbff4f0a7c1b92bbcb7d652942ca2c5a5c838",
+    "rostering/llm/__init__.py": "5e92203df7413c32db3a9d42bc982762672b7de92c873ebc591df9c02256a178",
+    "rostering/llm/api.py": "9577b8c71e5094ec528012db6becf91bee25d3a4d9567011f228afb2efbc4fa2",
+    "rostering/llm/pipeline.py": "af06ced39f0ae27fe26062b94e9c4dc77bc4892d8620d2a7feea6ad5e60efa89",
+    "rostering/llm/probe.py": "594bc59c2e339edd59c1bcefd979a31b301f72a62886538484faa604e2680999",
+    "rostering/llm/safeguards.py": "0fc921091ad57e86b92650d2d6500c0276b9734a43a88557dcd854a4540a1a17",
+    "schemas/instance.schema.json": "fa5c1e47706c889205a28d764f778cac65893d1cc8ec21cc0894efa6a27f242c",
+    "schemas/roster.schema.json": "3caacfe9bb821dd3f392447922e7ea22366a4f0e8fee82057d1e19b96962e759",
+    "prompts/baseline.txt": "67b069b1a8c6d408696aef269b969e0253280ca40e04cdf43f78fed84ca94ddd"
+  },
+  "git": {
+    "commit": "84f6de750de32fbf6f3f92017f9847173235c39f",
+    "dirty": true
+  },
+  "latency_seconds": 272.4275077500024,
+  "usage": {
+    "input_tokens": 9725,
+    "output_tokens": 25262,
+    "total_tokens": 34987
+  },
+  "returned_model": "deepseek-v4.1-flash-1017",
+  "cost": null,
+  "cost_note": "No verified provider tariff configured",
+  "stages": [
+    {
+      "name": "generation",
+      "latency_seconds": 272.4275077500024,
+      "usage": {
+        "input_tokens": 9725,
+        "output_tokens": 25262,
+        "total_tokens": 34987
+      },
+      "response_status": "stop",
+      "returned_model": "deepseek-v4.1-flash-1017"
+    }
+  ],
+  "api_call_count": 1,
+  "response_id": "chatcmpl-abb476b9c4788c69",
+  "response_status": "stop",
+  "incomplete_details": null,
+  "reported_settings": {
+    "service_tier": null
+  },
+  "finished_at_utc": "2026-10-27T17:10:47.929945+00:00",
+  "output_cap_reached": false
+}

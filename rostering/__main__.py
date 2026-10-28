@@ -30,8 +30,10 @@ def main() -> int:
     llm.add_argument("--instance", type=Path, required=True)
     llm.add_argument("--config", type=Path, default=ROOT / "config/llm.json")
     llm.add_argument("--output-dir", type=Path, default=Path("outputs"))
-    llm.add_argument("--max-output-tokens", type=positive, default=16000)
-    llm.add_argument("--timeout", type=positive, default=240)
+    llm.add_argument("--max-output-tokens", type=positive, default=32000)
+    llm.add_argument("--audit-output-tokens", type=positive, default=16000)
+    llm.add_argument("--timeout", type=positive, help="Optional request timeout; disabled by default")
+    llm.add_argument("--total-timeout", type=positive, help="Total time budget across generation, audit and revision")
     llm.add_argument("--dry-run", action="store_true", help="Save request without calling the API")
     llm.add_argument("--variant", choices=["baseline", "structured", "critique", "combined"], default="baseline")
     check = commands.add_parser("evaluate", help="Shared: evaluate either solution's roster")
@@ -56,7 +58,7 @@ def main() -> int:
             from .llm.api import APIError
             from .llm.pipeline import run_roster
             try:
-                path, metadata = run_roster(instance, json.loads(args.config.read_text()), args.output_dir, max_output_tokens=args.max_output_tokens, timeout=args.timeout, dry_run=args.dry_run, variant=args.variant)
+                path, metadata = run_roster(instance, json.loads(args.config.read_text()), args.output_dir, max_output_tokens=args.max_output_tokens, audit_output_tokens=args.audit_output_tokens, timeout=args.timeout, dry_run=args.dry_run, variant=args.variant, total_timeout=args.total_timeout)
             except APIError as error:
                 print(f"Error: {error}", file=sys.stderr)
                 return 1

@@ -1,54 +1,43 @@
-# Safeguard methodology
+# LLM safeguards
 
-Solution B uses SoCLaas model `x-test-2` through its OpenAI-compatible Chat Completions API. The model produces every roster assignment directly. Parsing and independent post-hoc evaluation run in Python; the LLM has no tools, code execution or classical solver access.
+Solution B uses SoCLaas `x-test-2` through its OpenAI-compatible Chat Completions API. The `hard_only_v1` prompt asks for any roster satisfying the same four hard constraints as Solution A. The model produces every assignment directly; Python performs parsing and independent evaluation afterwards. The LLM has no tools, code execution or classical-solver access.
 
 ## Variants
 
 | Variant | Generation | Audit and revision | Maximum calls |
 | --- | --- | --- | --- |
-| `baseline` | The shared prompt requests JSON. | None. | 1 |
-| `structured` | Same prompt plus `response_format.type=json_schema`, `strict=true`, case-specific enums and a supported generation schema. | None. | 1 |
-| `critique` | Same baseline prompt. | One fresh LLM audit, then one final revision. | 3 |
-| `combined` | Structured generation. | One audit, then structured final revision. | 3 |
+| `baseline` | Natural-language rules and shared input JSON; prompt requests JSON. | None. | 1 |
+| `structured` | Same prompt plus case-specific `response_format.type=json_schema`, `strict=true`. | None. | 1 |
+| `critique` | Same baseline prompt. | One fresh LLM audit, then one revision. | 3 |
+| `combined` | Structured generation. | One audit, then structured revision. | 3 |
 
-`rostering/llm/safeguards.py` defines the generation schema and audit/revision instructions. `prompts/baseline.txt` defines the shared task and objective. The audit checks concrete nurse/day or day/shift/skill counterexamples for completeness, coverage, skills, transitions, requests and weekends. Revision is told to verify the audit because it may contain mistakes.
+The exact generation template is `prompts/baseline.txt`; audit/revision templates are in `rostering/llm/safeguards.py`. Every run saves the full assembled requests, original output, audit, revision and final evaluation under ignored `outputs/`.
 
-The audit uses the same LLM in a fresh request. It is a bounded adaptation of [Self-Refine](https://arxiv.org/abs/2303.17651), rather than an independently trained verifier or a complete Chain-of-Verification implementation. The deterministic evaluator runs after all model calls; its counterexamples never enter the revision prompt.
+The audit checks specific nurse/day or day/shift/skill counterexamples for complete output, minimum coverage, qualifications and legal transitions, including history into Monday. It ignores preferred staffing, shift-off requests, complete weekends, fairness, streak limits and full-horizon workload. Revision must verify audit claims because the audit can itself be wrong. This bounded self-critique is an adaptation of [Self-Refine](https://arxiv.org/abs/2303.17651); it is not an independently trained verifier. The deterministic evaluator runs only after model calls finish and never feeds findings back into the LLM.
 
-The schema restricts output fields, identifier enums and record count. It cannot establish coverage, uniqueness, nurse-to-skill compatibility or legal transitions. The supported generation subset also omits the local contract's conditional status/roster rule. Generation-schema conformance, full output-contract validity and scheduling correctness are therefore reported separately.
+## Output schema and its limits
 
-## Fixed settings and failure handling
+The generation schema restricts fields, identifier enums and maximum roster length. It cannot establish nurse-day uniqueness, staffing coverage, nurse-to-skill compatibility or legal transitions. It also omits the full local output schema's conditional status/empty-roster rule. Generation-schema conformance, full output-schema validity and hard scheduling validity are distinct measures.
 
-- Requested reasoning effort: `none`; temperature remains at provider default; no model seed is requested.
-- Generation/revision output limit: 16,000 tokens each. Audit limit: 8,000.
-- Timeout: 240 seconds per call, with no automatic retries.
-- An empty or incomplete generation is retained without triggering critique.
-- An empty or incomplete audit retains the original candidate and records `critique_incomplete`.
-- API failures and incomplete outputs remain failed trials; missing usage is not treated as known zero cost.
-- Original and final candidates are evaluated afterwards so repairs and regressions can be counted.
+The gateway is OpenAI-compatible, but API compatibility alone does not establish full strict-schema enforcement. Structured output is requested and the returned data is independently validated; schema conformance does not prove scheduling correctness.
 
-## Cases and comparison
+## Settings and failures
 
-The two plans in `config/experiments/` use these same five initial-history/weekly-data combinations, with three repetitions each:
+- Requested reasoning effort: `high`; provider-default temperature; no model seed.
+- Generation/revision: at most 32,000 output tokens each; audit: at most 16,000. These caps include reasoning and answer tokens.
+- Matched benchmark: no imposed classical-search, client-request or whole-trial deadline. Generation stops at the configured token limit or the provider's termination. Server/network failures remain possible.
+- Single-case LLM CLI: timeouts are disabled by default. Explicit `--timeout` / `--total-timeout` options are available for separate deadline experiments.
+- No automatic retries, JSON repairs or evaluator-directed corrections.
+- Empty/incomplete generation does not trigger an audit. Empty/incomplete audit retains the initial candidate and records the failure.
+- API failures, incomplete outputs and abstentions stay in the trial denominator. Missing usage is not reported as known zero usage.
+- Original and revised candidates are evaluated after the calls to count valid repairs and regressions.
 
-| Case | Minimum nurse-days | Preferred nurse-days | Requests | Initial feasibility label |
-| --- | --- | --- | --- | --- |
-| H0 / WD0 | 22 | 30 | 3 | Unlabelled |
-| H0 / WD4 | 26 | 29 | 1 | Unlabelled |
-| H1 / WD5 | 23 | 28 | 3 | Feasible, validated supplied witness |
-| H2 / WD6 | 23 | 31 | 2 | Feasible, validated supplied witness |
-| H2 / WD9 | 19 | 26 | 5 | Unlabelled |
+## Matched comparison
 
-Reference witnesses are evaluated outside the generation pipeline and never included in prompts. The cases were selected before their batch results were inspected. The earlier H0/WD1 development case is excluded. A failed attempt does not establish infeasibility on an unlabelled case.
+The frozen [plan](../config/experiments/parity_v1.json) covers 15 independent seven-day inputs with five nurse counts and controlled history/demand contrasts. See [selection details](benchmark.md). A runs once per input; each B variant runs three times: 15 classical runs and 180 LLM trials, with at most 360 model calls. Job order is shuffled with scheduling seed 4263; this is not a model sampling seed.
 
-The comparison measures schema validity, complete hard-valid rosters, violations by type, valid-only partial soft cost, and total latency/tokens/calls across stages. Every attempted trial remains in the validity denominator. The objective covers three weekly soft categories only; see [the input contract](input_contract.md). No optimality or UNSAT-detection claim is made.
+`uv run python scripts/run_comparison.py` saves each attempt, freezes input and source hashes, and generates the [comparison](../reports/hard_only_parity_v1.md) and README table when complete. Resume with `--resume outputs/comparison/RUN_DIRECTORY`; completed and uncertain interrupted requests are not replayed. Raw traces remain local and ignored; portable results include every attempted trial and identify incomplete runs explicitly.
 
-## Measured gateway behaviour
+New runs also save a `source_snapshot/`. Replay can check the original runner against its frozen hash after reporting fixes; current model, prompt, schema and evaluator sources must still match. Exported example ZIPs are saved inside ignored `outputs/exports/`.
 
-The retained `python -m rostering.llm.probe` command tests both APIs with a valid schema containing a random enum absent from the conflicting plain-text prompt, then an invalid strict schema. It writes fresh evidence under ignored `outputs/`.
-
-On 24 October 2026, Responses ignored the schema request; Chat Completions produced the schema's exact enum value. Both APIs accepted the invalid schema. The new experiments therefore use Chat Completions consistently, while avoiding a claim that OpenAI's strict guarantees automatically apply to this gateway. Request conventions follow the [Structured Outputs documentation](https://developers.openai.com/api/docs/guides/structured-outputs).
-
-In the completed matched experiment, all 45 constrained stages matched their generation schemas. Some outputs still violated the fuller contract through inconsistent status/roster combinations, and none satisfied every hard scheduling check. See [the recorded results](../reports/pilot_chat_v1.md), [aggregate JSON](../reports/pilot_chat_v1.json), and [all-trial CSV](../reports/pilot_chat_v1.csv).
-
-Raw evidence for that historical run remains in the previous workspace archive. The clean repository includes its metrics and portable suite/run identifiers, plus the scripts to collect and verify new experiments. Variants ran in separate batches, so latency and accuracy differences are descriptive pilot observations; provider load and timing effects were not controlled.
+There is no soft objective or optimality claim. The evaluator's retained soft scores are optional diagnostics. H0/H1/H2 and WD numbers identify alternative initial histories and weekly demand files, not sequential weeks.

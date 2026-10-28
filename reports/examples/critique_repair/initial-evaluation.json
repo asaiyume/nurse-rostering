@@ -1,0 +1,42 @@
+{
+  "instance_id": "n021w4_2_H0-n021w4-2_WD-n021w4-8_week0",
+  "schema_valid": true,
+  "schema_errors": [],
+  "solution_status": "candidate",
+  "evaluation_status": "evaluated",
+  "roster_complete": true,
+  "hard_valid": false,
+  "hard_violation_counts": {
+    "single_assignment": 0,
+    "minimum_coverage": 1,
+    "shift_succession": 0,
+    "required_skill": 0
+  },
+  "hard_violations": [
+    {
+      "type": "minimum_coverage",
+      "units": 1,
+      "day": "Thu",
+      "shift": "Early",
+      "skill": "Trainee",
+      "required": 1,
+      "assigned": 0
+    }
+  ],
+  "output_issues": [],
+  "soft_score": null,
+  "soft_scope": {
+    "included": [
+      "preferred_coverage",
+      "shift_off_requests",
+      "complete_weekends"
+    ],
+    "excluded": [
+      "consecutive_assignments",
+      "consecutive_days_off",
+      "total_assignments",
+      "total_working_weekends"
+    ],
+    "is_full_inrc2_score": false
+  }
+}

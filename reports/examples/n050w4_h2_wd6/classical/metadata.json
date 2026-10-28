@@ -1,0 +1,28 @@
+{
+  "algorithm": "Slot CSP: MRV/degree/LCV backtracking with specialized AC-3",
+  "mode": "hard_constraints_only",
+  "soft_method": null,
+  "time_limit_seconds": null,
+  "variable_count": 139,
+  "variable_type": "required_staffing_slot",
+  "nurse_day_records": 350,
+  "initial_domain_values": 3602,
+  "exact_minimum_reduction": true,
+  "ordered_slot_pairs": 53,
+  "legacy_optimize_ignored": false,
+  "runtime_seconds": 0.03226612500111514,
+  "timed_out": false,
+  "search_exhausted": false,
+  "infeasibility_proven": false,
+  "optimality_proven": false,
+  "optimality_applicable": false,
+  "soft_cost": null,
+  "objective_scope": "Feasibility only; no soft objective",
+  "statistics": {
+    "nodes": 140,
+    "backtracks": 0,
+    "arc_revisions": 5829,
+    "values_pruned": 1110,
+    "coverage_checks": 19451
+  }
+}

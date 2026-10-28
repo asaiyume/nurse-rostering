@@ -12,7 +12,7 @@ class APIError(RuntimeError):
     pass
 
 
-def request_response(config: dict, payload: dict, timeout: int = 180) -> tuple[dict, float]:
+def request_response(config: dict, payload: dict, timeout: float | None = None) -> tuple[dict, float]:
     routes = {"responses": "/responses", "chat_completions": "/chat/completions"}
     if config.get("api_style") not in routes:
         raise ValueError("Unsupported API style")

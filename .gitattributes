@@ -6,3 +6,11 @@
 
 # Preserve original benchmark bytes for reproducible source-file hashes.
 inrc2/** -text
+
+# Preserve returned model thinking verbatim, including trailing spaces.
+reports/examples/**/thinking.txt whitespace=-blank-at-eol
+
+# Keep generated evidence available while collapsing it in code review.
+reports/examples/** linguist-generated=true
+reports/*.json linguist-generated=true
+reports/*.csv linguist-generated=true

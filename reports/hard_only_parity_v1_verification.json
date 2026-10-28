@@ -1,0 +1,76 @@
+{
+  "complete": true,
+  "verified_trials": 195,
+  "trials_by_method": {
+    "baseline": 45,
+    "classical": 15,
+    "combined": 45,
+    "critique": 45,
+    "structured": 45
+  },
+  "api_calls": 312,
+  "returned_api_calls": 298,
+  "constrained_stages": 108,
+  "complete_schema_conforming_stages": 105,
+  "requested_reasoning_effort": "high",
+  "reported_reasoning_tokens_by_variant": {
+    "baseline": 449523,
+    "combined": 1205505,
+    "critique": 1080159,
+    "structured": 521885
+  },
+  "stages_with_exposed_reasoning_by_variant": {
+    "baseline": 40,
+    "combined": 109,
+    "critique": 107,
+    "structured": 42
+  },
+  "returned_models": {
+    "deepseek-v4.1-flash-1017": 298
+  },
+  "valid_initial_candidates_by_variant": {
+    "baseline": 40,
+    "combined": 43,
+    "critique": 39,
+    "structured": 38
+  },
+  "valid_initial_candidates_in_api_failed_trials": {},
+  "incomplete_audit_trials_by_variant": {
+    "combined": 20,
+    "critique": 14
+  },
+  "completed_revision_stages_by_variant": {
+    "baseline": 0,
+    "combined": 23,
+    "critique": 26,
+    "structured": 0
+  },
+  "api_failure_stages": {
+    "critique:generation": 4,
+    "structured:generation": 3,
+    "baseline:generation": 5,
+    "combined:generation": 2
+  },
+  "schema_valid_scheduling_failure_examples": [
+    {
+      "case_id": "n021w4_h2_wd2",
+      "variant": "structured",
+      "repetition": 1,
+      "schema_valid": true,
+      "roster_complete": true,
+      "violations": [
+        {
+          "type": "minimum_coverage",
+          "units": 1,
+          "day": "Sat",
+          "shift": "Night",
+          "skill": "Nurse",
+          "required": 1,
+          "assigned": 0
+        }
+      ]
+    }
+  ],
+  "a_b_inputs_match": true,
+  "independent_evaluations_match": true
+}

@@ -1,0 +1,1144 @@
+We need produce roster JSON satisfying hard constraints. Need solve manually/algorithmically without tools. Need return one JSON object only. Need include every nurse-day exactly once: 50 nurses *7=350 records. Need meet coverage minimums per day shift skill. We can ignore contracts/preferences/streak etc. Only hard constraints: exactly one record/day; at most one shift/day; meet minimum coverage each requirement; working record covers exactly one skill nurse possesses; multi-skilled cannot fill two coverage in one shift (already one shift). Respect forbidden_successions between consecutive days including history last_shift to Monday. Off breaks succession. Need only forbidden successions:
+Early: []
+Day: []
+Late: forbidden next day Early or Day.
+Night: forbidden next day Early, Day, Late.
+Thus if work Night on day D, next day (including Mon from history) cannot be Early/Day/Late. Can be Night or Off. If Late on D, next day cannot Early/Day; can Late/Night/Off. Early/Day no restriction? Forbidden_successions maps current shift? Usually "forbidden_successions": for shift X list shifts forbidden following X. So if previous day shift = Night, next cannot Early/Day/Late. Yes.
+
+Need construct feasible roster. This is large but minimum coverages moderate. Need ensure successions for all nurses. We can simplify by many Off and assign minimum coverage exactly. Need assign shifts/skills per day to meet coverage. Since many staff, easy. Need respect nurse skills and history transition into Monday for those with last_shift. For Monday assignments, check history last_shift to Monday shift. If history last_shift Night cannot Monday Early/Day/Late, only Night or Off. If Late cannot Monday Early/Day, can Late/Night/Off. If Early/Day no restriction (for current previous day? If previous Early/Day no forbidden). Off no restriction. Need only Monday.
+
+We can choose mostly Off for many. Need cover minimums. Need calculate total minimums per day/shift/skill. Let's aggregate by day/shift/skill from coverage minima. We need assign enough nurses with skill. Staff categories:
+HeadNurse-capable: HN_0..HN_5 (also Nurse). 6.
+Nurse-capable: HN_0..5 plus NU_6..NU_27 (22? NU_6 through NU_27 inclusive =22). So total Nurse skill holders 28. But for "Nurse" coverage can use any with Nurse skill including HN; multi-skilled. For HeadNurse coverage use only HN.
+Caretaker skill holders: NU_6..NU_27 (22) plus CT_28..CT_39 (12) =34. Note NU have Nurse+Caretaker.
+Trainee: TR_40..49 (10).
+
+Coverage minima per day by shift and skill. Let's list per day requirements (minimum only). Need satisfy each day shift skill counts. Let's transcribe systematically.
+
+Days Mon-Sun. For each shift: Early, Day, Late, Night. Skills H=HeadNurse, N=Nurse, C=Caretaker, T=Trainee.
+
+I'll create table minima per day/shift.
+
+From coverage:
+
+Early:
+Mon: H0, N1, C2, T0.
+Tue: H1, N1, C4, T1.
+Wed: H1, N1, C2, T1.
+Thu: H1, N1, C4, T0.
+Fri: H1, N2, C3, T1.
+Sat: H0, N1, C0, T1.
+Sun: H0, N1, C1, T0.
+
+Day:
+Mon: H0, N3, C2, T1.
+Tue: H0, N1, C3, T1.
+Wed: H0, N3, C2, T1.
+Thu: H1, N2, C2, T1.
+Fri: H0, N2, C3, T1.
+Sat: H0, N1, C1, T0.
+Sun: H0, N1, C1, T0.
+
+Late:
+Mon: H0, N2, C3, T1.
+Tue: H0, N2, C3, T1.
+Wed: H0, N2, C3, T1.
+Thu: H0, N3, C3, T1.
+Fri: H0, N2, C2, T1.
+Sat: H1, N1, C2, T0.
+Sun: H0, N1, C1, T1.
+
+Night:
+Mon: H0, N2, C2, T1.
+Tue: H1, N2, C3, T1.
+Wed: H1, N2, C3, T0.
+Thu: H1, N2, C3, T1.
+Fri: H0, N1, C2, T1.
+Sat: H0, N1, C2, T1.
+Sun: H1, N1, C1, T1.
+
+Need for each day total per shift maybe sum skills. But each nurse works at most one shift/day. Need distribute among available 50 nurses, per day maybe totals. Let's sum daily requirements per day.
+
+Mon:
+Early: N1+C2 =3 (H0 T0)
+Day: N3+C2+T1 =6
+Late: N2+C3+T1 =6
+Night: N2+C2+T1 =5
+Total min 20 assignments Monday. We have 50, okay.
+But note multi-skilled can cover only one skill; coverage per shift skill of Nurse and Caretaker separate. A NU can fill either Nurse or Caretaker, not both in same shift/day. Since many caretakers.
+
+Tue:
+Early: H1+N1+C4+T1=7
+Day: N1+C3+T1=5
+Late: N2+C3+T1=6
+Night: H1+N2+C3+T1=7
+Total 25.
+Wed:
+Early H1+N1+C2+T1=5
+Day N3+C2+T1=6
+Late N2+C3+T1=6
+Night H1+N2+C3=6 (T0)
+Total 23.
+Thu:
+Early H1+N1+C4=6
+Day H1+N2+C2+T1=6
+Late N3+C3+T1=7
+Night H1+N2+C3+T1=7
+Total 26.
+Fri:
+Early H1+N2+C3+T1=7
+Day N2+C3+T1=6
+Late N2+C2+T1=5
+Night N1+C2+T1=4
+Total 23.
+Sat:
+Early N1+T1=2 (C0)
+Day N1+C1=2
+Late H1+N1+C2=4
+Night N1+C2+T1=4
+Total 12.
+Sun:
+Early N1+C1=2
+Day N1+C1=2
+Late N1+C1+T1=3
+Night H1+N1+C1+T1=4
+Total 11.
+
+Total assignments minimum ~140. We can use plenty.
+
+Need design roster. Since only successions matter, easiest: assign nurses to same shift on consecutive days maybe Night cluster, or Off. Because Night-> next cannot Early/Day/Late, but can Night. If assign a nurse Night all 7 days, valid succession (Night -> Night allowed; Night forbidden Early/Day/Late). If assign Late consecutive, allowed Late -> Late/Night/Off. Early consecutive allowed; Day consecutive allowed. Can use blocks.
+
+Need avoid cross-shift transitions from Night to others. For nurses with history last_shift Night (HN_0, NU_9, NU_11, CT_34, TR_40?) Actually history Night: HN_0, NU_9, NU_11, CT_34, TR_40. On Monday these can only work Night or Off. We can simply keep them Off Monday if not needed or assign Night.
+History Late (HN_1, NU_6, NU_24, CT_33, CT_38, TR_45): Monday cannot Early/Day, can Late/Night/Off.
+History Early (NU_12, NU_21): Monday unrestricted? Early-> any not forbidden. So could work any.
+History Day (HN_4, NU_23, NU_26, CT_35, CT_37, TR_43): unrestricted Monday.
+Others Off history unrestricted.
+
+We can construct by shift/skill assigning minimum, using stable nurses for each shift across week, with some changes. Need ensure each day coverage. Because coverage varies by day, can assign a core group of nurses to a shift daily; some on/off. Need track successions for all working transitions between consecutive days. Simpler: For each nurse we assign either same shift all days they work, or Off gaps. If same shift consecutive, valid unless shift=Night followed by Night allowed. If Off breaks. So assign each nurse to at most one shift type for entire week, with off days. Then no forbidden succession except when starting after Off no issue; history for Monday only checked. If a nurse works e.g. Late all assigned days, any consecutive Late allowed. If Off in between fine. If never switch shift. Great. We can use all non-Off assignments as same shift for each nurse, selected based on Monday history restrictions. This simplifies.
+
+Need cover per day/shift/skill. We can assign a pool of nurses to each shift; within each day choose enough by skill. Multi-skilled can be assigned skill either Nurse or Caretaker depending coverage and day. But if same nurse uses different skills on different days while same shift, allowed. Need only one skill per working record; no issue.
+
+Given surplus, can assign dedicated pools per shift and skill. Need ensure day requirements summed per skill across shifts per day fit available skill holders (nurse can only one shift/day). But with 50 and ~26 max, fine. We just need coverage.
+
+Approach: Create roster with many Off, choose minimal assignments per day. Need track each nurse assigned maybe multiple days same shift. I can design per shift pools and fill daily requirements. Need also ensure coverage HeadNurse across shifts.
+
+Because for each day, requirements per shift are independent except nurse not double-booked. We can use distinct pools for shifts, each with enough skill coverage. Let's allocate:
+
+HeadNurse needs only HN_0..5. Need HN coverage:
+Mon: Early0,Day0,Late0,Night0 =0 HN coverage (given H min all 0 Mon). Actually Night Mon H0; yes none.
+Tue: Early1, Night1 =2 headnurse min. (Day/Late0)
+Wed: Early1, Night1 =2
+Thu: Early1, Day1, Night1 =3 (Late0)
+Fri: Early1 =1
+Sat: Late1 =1
+Sun: Night1 =1
+Total HN assignments min 10 across week. We have 6 HN, can assign same HN to Night repeatedly, etc.
+
+Nurse coverage per shift/day needs many. We can use NU pool plus HN if not needed. Caretaker coverage can use NU or CT. Trainee only TR. Since NU can cover Nurse or Caretaker, need allocate.
+
+Let's compute per day total needed for Nurse and Caretaker and Trainee across shifts. Since different shifts require separate but same day each nurse one shift. Total per day by skill:
+
+Mon:
+N: Early1 + Day3 + Late2 + Night2 =8
+C: Early2+Day2+Late3+Night2=9
+T: Early0+Day1+Late1+Night1=3
+Total 20.
+
+Tue:
+N: E1+Day1+Late2+Night2=6
+C: E4+Day3+Late3+Night3=13
+T: E1+Day1+Late1+Night1=4
+H: E1+Night1=2
+Total 25.
+
+Wed:
+N: E1+Day3+Late2+Night2=8
+C: E2+Day2+Late3+Night3=10
+T: E1+Day1+Late1+Night0=3
+H: E1+Night1=2
+Total 23.
+
+Thu:
+N: E1+Day2+Late3+Night2=8
+C: E4+Day2+Late3+Night3=12
+T: E0+Day1+Late1+Night1=3
+H: E1+Day1+Night1=3
+Total 26.
+
+Fri:
+N: E2+Day2+Late2+Night1=7
+C: E3+Day3+Late2+Night2=10
+T: E1+Day1+Late1+Night1=4
+H: E1+Night0+Day0+Late0=1
+Total 22? Earlier I summed 23: Early7, Day6, Late5, Night4 =22? Let's recalc Fri: Early H1+N2+C3+T1=7; Day N2+C3+T1=6; Late N2+C2+T1=5; Night N1+C2+T1=4. Sum 22. My earlier said 23 typo. N total 2+2+2+1=7; C3+3+2+2=10; T1+1+1+1=4; H1 total22.
+
+Sat:
+N: E1+Day1+Late1+Night1=4
+C: E0+Day1+Late2+Night2=5
+T: E1+Day0+Late0+Night1=2
+H: Late1=1
+Total12.
+
+Sun:
+N: E1+Day1+Late1+Night1=4
+C: E1+Day1+Late1+Night1=4
+T: E0+Day0+Late1+Night1=2
+H: Night1=1
+Total11.
+
+Need assign per shift/day specific. We can use distinct shift pools, but some nurses can be Off/assigned. Since total per day <=26 and 50 available, can simply create a roster manually for each day independently, using different nurses each day? Wait succession between consecutive days matters if same nurse works different shift. To avoid, we can assign each nurse only on isolated days with Off surrounding, or same shift. But easier: For each day, choose a set of nurses with Off previous? Need 20-26 assignments daily. There are 50 nurses; can use disjoint subsets by day to avoid succession entirely if enough. Need 7 days * max 26 = 182 nurse-days, but 50 nurses *7=350. Could assign each nurse at most one day, then no consecutive succession, but need 20+25+23+26+22+12+11=139 distinct nurse-days; with 50 nurses each at most one day gives max 50, not enough. Could each nurse work non-consecutive days. But manual tracking.
+
+Alternative: Use dedicated shift for each nurse all week, with off as needed. This is systematic.
+
+Let's allocate pools to shifts:
+- Night pool: enough to cover night requirements daily, with Nurse, Caretaker, Trainee, HeadNurse.
+- Late pool.
+- Day pool.
+- Early pool.
+But some shifts have daily needs, can use same shift pool and off. Need each pool have enough different skills. Since skills overlap, can assign within pool. Need avoid a nurse being needed in multiple shifts same day. Dedicated pool per shift solves.
+
+Let's compute maximum daily requirements per shift (sum across skills) to size pools:
+Early max Tue 7, Fri7, Thu6, etc.
+Day max Mon6, Wed6, Fri6.
+Late max Thu7, Mon/Tue/Wed6.
+Night max Tue7, Thu7, Mon5.
+Total max pools maybe sum max 7+6+7+7=27. We have 50. Allocate fixed nurses to each shift and use subset daily based on skill needs. Need pool per shift with enough per skill.
+
+Need cover HeadNurse across Early/Night etc. HN can be assigned to specific shift(s). We have 6 HN. HeadNurse requirements:
+Tue Early1, Tue Night1
+Wed Early1, Wed Night1
+Thu Early1, Day1, Night1
+Fri Early1
+Sat Late1
+Sun Night1
+No Mon HN.
+We can assign one or more HN to Night for Tue/Wed/Thu/Sun. Use HN_0 maybe Night all week (but history Night allows Night Monday; can be off/ night). HN_1 maybe Early Tue-Fri? Need transitions: if same shift Early each working day okay. HN_4 etc. Need head nurse Day Thu. Could use HN_4 on Day Thu only (history Day unrestricted; Off other days). Sat Late HN_1? If HN_1 Early Fri then Late Sat: Early -> Late? Forbidden successions only for previous Late/Night. Early has none, so allowed. But to be safer same shift off. But no restriction from Early to Late. Fine.
+
+Let's build per shift pools.
+
+First list all nurses with skills:
+HeadNurses HN0-5: skills H,N.
+Nurse/Caretaker NU6-27: N,C.
+Caretakers CT28-39: C.
+Trainees TR40-49: T.
+
+We can assign NU to either Nurse or Caretaker per day. CT only Caretaker. TR only Trainee. HN can HeadNurse or Nurse.
+
+We must meet each shift's skill minima. For each shift pool, we need:
+Early daily needs:
+Mon: N1,C2,T0,H0
+Tue: H1,N1,C4,T1
+Wed: H1,N1,C2,T1
+Thu: H1,N1,C4,T0
+Fri: H1,N2,C3,T1
+Sat: N1,C0,T1,H0
+Sun: N1,C1,T0,H0
+Max per skill: H1; N2; C4; T1. Need pool with at least H1 (HN), N2, C4, T1. Could reuse same nurse on consecutive Early. So assign fixed Early pool:
+HN_1 for H Tue-Fri (and maybe Mon off, Sat/Sun off). Check history HN_1 last Late -> Monday if Early would be forbidden (Late->Early forbidden). So don't assign HN_1 Monday. Tue Early after Monday Off okay. Tue-Fri Early consecutive allowed. For Sat/Sun maybe off.
+Nurse-capable for N: choose NU_12 (history Early) can work Early many days. Need up to 2 on Fri; choose NU_12 and NU_21 (history Early) for Fri. But NU_21 last Early Monday unrestricted. We can assign them Early on required days.
+Caretakers for C: choose NU_6? history Late; Monday Early forbidden if last Late->Early. Don't assign Monday. Need C on Mon 2. Use CT_28, CT_29 (history Off) for C Mon. For Tue C4, need four. We have many CT. We can assign fixed Early caretakers CT_28, CT_29, CT_30, CT_31 for Tue/Thu etc. But they only work C. No issue. Need C2 Mon, C2 Wed, C4 Thu, C3 Fri, C0 Sat,C1 Sun. We can just schedule CT caretakers assigned to Early on needed days; ensure if consecutive days same shift Early, allowed. Even if they switch from Off to Early, fine.
+Trainee T: TR_41 for Tue? Need T1 Tue, Wed, Fri, Sat. Assign TR_41 to Early those days; transitions maybe Early same shift or Off. History Off okay. If works Tue/Wed consecutive Early allowed; Fri after Thu Off; Sat after Fri Early allowed. Fine.
+
+We can design each shift pool separately with enough.
+
+But there is overlapping if same nurse used in multiple shifts accidentally. Need create one global assignment per nurse per day. I can develop day by day using dedicated shift pools, ensuring no nurse assigned twice same day. Let's allocate fixed pool per shift:
+
+Early pool: HN_1, NU_12, NU_21, CT_28, CT_29, CT_30, CT_31, TR_41 maybe plus spare.
+Day pool: Need N up to 3, C3, T1, H1. Use HN_4 for Day Thu only (HeadNurse). NU_13, NU_14 for N. CT_32, CT_33, CT_34 for C. TR_42 for T. Need avoid conflict with other pools.
+Late pool: Need N up to 3, C3, T1, H1 Sat. Use HN_2 for Sat Head? or HN_5. Nurse: NU_15, NU_16, NU_17. Caretakers: CT_35, CT_36, CT_37. Trainee: TR_43. Head: HN_2 Sat.
+Night pool: Need N up to2, C3, T1, H1. Use HN_0 for Head Night (history Night, can Night Mon-Sun). Nurse: NU_9 (history Night; Night all week okay), NU_10. Caretakers: CT_38 (history Late, Monday cannot Early/Day but Night allowed), CT_39, NU_11 (history Night; but NU_11 has N,C; could C). Trainee: TR_44/TR_40. Need careful not double use.
+
+This initial pools total Early 8 + Day 7 + Late 8 + Night 8 =31, leaving many spare. Need check each pool has enough per skill for daily maxima. But for some days need more C in Early than allocated (C4). Early pool has CT28-31 plus NU maybe? Only CT 4. Need C4 Tue/Thu exactly. C3 Fri. Good. Early N2 Fri: NU_12, NU_21. H1: HN_1. T1: TR_41. That's 2+4+1+1=8 for Fri? Wait Early Fri needs H1,N2,C3,T1 total7; use HN1, NU12, NU21, CT28, CT29, CT30, TR41 =7. Good. Tue needs H1,N1,C4,T1 total7: HN1, NU12, CT28-31, TR41 =1+1+4+1=7. Thu H1,N1,C4 total6 (T0): HN1, NU12, CT28-31 =6. Wed H1,N1,C2,T1=5: HN1, NU12, CT28, CT29, TR41 =5. Mon N1,C2=3: NU12, CT28, CT29 (no H/T). Sat N1,T1=2: NU12, TR41. Sun N1,C1=2: NU12, CT28. All good. Need check succession for these Early workers:
+- HN_1 history Late -> Monday? Not working Mon. Tue Early. Off Mon breaks? For transition Monday to Tuesday: Monday Off, Tuesday Early no issue. Consecutive Tue-Fri Early all allowed. Sat/Sun off. Good.
+- NU_12 history Early; assigned Early Mon? I set Mon N1 = NU12? Wait Mon Early N1 yes. History last Early, Early allowed. Then Tue Early? If assigned Tue also Early, Early->Early allowed. Wed Early etc? My Early N assignments: Mon NU12, Tue NU12, Wed NU12, Thu NU12, Fri NU12+NU21, Sat NU12, Sun NU12? Let's check I used NU12 every day as N1. Consecutive Early all week allowed. No restriction. Fine. But need at most one shift per day; NU12 only Early. Good.
+- NU_21 assigned Fri Early only. History Early Monday if not working Monday (Off) okay. No issue.
+- CT28-31 Early schedules: CT28 Mon,Tue,Wed,Thu,Fri,Sun maybe; CT29 Mon,Tue,Wed,Thu,Fri; CT30 Tue,Thu,Fri; CT31 Tue,Thu? Need check their history. Mostly Off; CT31 Off. If work consecutive Early allowed. No forbidden. Fine.
+- TR41 Tue,Wed,Fri,Sat Early. History Off. Consecutive or gaps allowed, same Early. Fine.
+
+Day pool:
+Need per day:
+Mon: H0,N3,C2,T1 total6.
+Tue: N1,C3,T1 total5.
+Wed: N3,C2,T1 total6.
+Thu: H1,N2,C2,T1 total6.
+Fri: N2,C3,T1 total6.
+Sat: N1,C1 total2.
+Sun: N1,C1 total2.
+Choose Day pool:
+HN_4 for H Thu only (history Day, allowed).
+Nurses: NU_13, NU_14, NU_15? But NU_15 maybe Late pool? Let's assign Day Nurse-capable: NU_13, NU_14, NU_15. Need up to N3 (Mon,Wed), N2 Thu/Fri, N1 other. Use these three.
+Caretakers: CT_32, CT_33, CT_34. Need up to C3. But CT_33 history Late Monday? For Day Monday if last Late -> Day forbidden (Late forbids Early,Day). So cannot assign CT_33 Monday Day if last Late. Need keep CT_33 Off Monday or assign Night/Late/Off. Use CT_32 and CT_34 for Mon C2. CT_34 history Night; Night->Day forbidden Monday, so cannot Day Monday. Ah CT_34 last_shift Night, Night forbids Early,Day,Late. So CT_34 cannot Day Monday. CT_33 last Late cannot Day Monday. CT_32 Off can Day Monday. Need two C Mon Day. Use another caretaker from spare e.g. CT_30? But CT_30 Early assigned Tue; can work Day Mon and Early Tue? If Day Mon, next Early Tue: is Day->Early forbidden? Day has no forbidden successions, so allowed. But CT30 already Early pool; can we use same nurse Day Mon and Early Tue? Yes at most one shift per day, and succession Day->Early allowed because Day empty. But for simplicity use spare CT_35? However CT35 history Day, could work Day Mon? Need Monday from history Day: no restriction. But if assigned CT_35 Day pool, ensure not conflict with Late pool. Let's define Day caretakers: CT_32, CT_35, CT_36 maybe. Need handle history:
+CT_32 Off -> Monday Day allowed.
+CT_35 last Day -> Monday Day allowed (Day->Day allowed).
+CT_36 Off -> allowed.
+Could use CT_32, CT_35 for Mon; Tue need C3 use CT_32, CT_35, CT_36; Wed C2; Thu C2; Fri C3; Sat C1; Sun C1. Need check forbidden transitions for these if consecutive different? We'll assign same Day shift mostly, so if consecutive Day allowed. If CT32 works Mon/Tue/Wed etc Day -> Day allowed. Fine. Their history to Monday: CT32 Off; CT35 Day; CT36 Off.
+Trainee: TR_42 for T on Mon-Thu/Fri? Need T Mon, Tue, Wed, Thu, Fri; max 1. Use TR_42 every required day Day. History Off. Consecutive Day allowed. (For Mon if Off history no issue.) Assign Day shift Mon-Fri. Fine.
+Head HN_4 Day Thu only. Check HN_4 history Day -> if Thu only after Off Mon-Wed, fine.
+
+Day staffing daily:
+Mon N3: NU_13,NU_14,NU_15; C2: CT_32,CT_35; T1: TR_42. =6.
+Tue N1: NU_13; C3: CT_32,CT_35,CT_36; T1: TR_42. =5.
+Wed N3: NU_13,NU_14,NU_15; C2: CT_32,CT_35; T1: TR_42. =6.
+Thu H1 HN_4; N2: NU_13,NU_14; C2: CT_32,CT_35; T1 TR_42. total6. (Could use CT_36 but no need)
+Fri N2: NU_13,NU_14; C3: CT_32,CT_35,CT_36; T1 TR_42. total6.
+Sat N1: NU_13; C1: CT_32. total2.
+Sun N1: NU_13; C1: CT_32. total2.
+Need ensure no nurse assigned other shifts same day. NU_13 etc only Day. CT32/35/36 only Day. HN4 Day Thu. TR42 Day Mon-Fri. Check succession if NU_13 works Day Mon-Fri plus Sat/Sun? We assign every day Day (Mon-Sun) for NU_13 actually Sat/Sun N1. So NU_13 works Day all 7 days. Day -> Day allowed. No max constraints. Fine.
+NU_14 Day Mon, Wed, Thu, Fri maybe not Tue; Day consecutive transitions fine with Off. NU_15 Day Mon,Wed; Off gaps. CT32 Day all days (Mon-Sun) maybe works 7 Day, allowed (no max ignored). CT35 Day Mon-Fri maybe. CT36 Tue/Fri. TR42 Mon-Fri Day. All allowed.
+
+Late pool:
+Need per day minima:
+Mon: N2,C3,T1,H0 total6
+Tue: N2,C3,T1 total6
+Wed: N2,C3,T1 total6
+Thu: N3,C3,T1 total7
+Fri: N2,C2,T1 total5
+Sat: H1,N1,C2,T0 total4
+Sun: N1,C1,T1 total3
+Need pool with at least N3, C3, T1, H1. Use:
+Head HN_2 for Sat Late (Head). Check history HN_2 Off -> Sat allowed. Only Sat.
+Nurses: NU_16, NU_17, NU_18 maybe. Need N3 Thu. Use these.
+Caretakers: CT_37, CT_38, CT_39. But CT_38 history Late -> Monday if Late allowed (Late->Late). We might not need Monday C3 maybe use. CT_39 Off. Need up to C3. Could also use NU? But dedicated CT.
+Trainee: TR_43. Need T Mon-Fri, Sun. History Day, Monday Late allowed? Day->Late allowed because Day no forbidden. We can assign TR43 Late many days. Consecutive Late allowed. Fine.
+Need check CT_38 history Late: if assigned Monday Late allowed; Late->Late allowed. If assigned Late all week allowed. CT_37 history Day -> Monday Late allowed. CT_39 Off. Good.
+
+Daily Late assignments:
+Mon: N2 NU_16,NU_17; C3 CT_37,CT_38,CT_39; T1 TR_43. total6.
+Tue same N2 maybe NU_16,NU_17; C3 CT_37,38,39; T1 TR43. total6.
+Wed N2 NU16,NU17; C3 CT37,38,39; T1 TR43. total6.
+Thu N3 NU16,NU17,NU18; C3 CT37,38,39; T1 TR43. total7.
+Fri N2 NU16,NU17; C2 CT37,CT38; T1 TR43. total5 (CT39 off)
+Sat H1 HN_2; N1 NU16; C2 CT37,CT38. total4 (no T)
+Sun N1 NU16; C1 CT37; T1 TR43. total3.
+Need succession: For each late nurse, if working consecutive Late allowed. Off gaps okay. TR43 Late Mon-Sun mostly; Late->Late allowed. HN2 Sat only. Check history for Monday:
+NU16 Off -> Late allowed. NU17 Off -> Late. CT37 Day -> Late allowed? Forbidden successions for Day empty, so allowed. CT38 Late -> Late allowed. CT39 Off. TR43 Day -> Late allowed. Good.
+Need ensure no same nurse used in other shift: NU_16/17/18 not used elsewhere (I used NU_13-15 Day, NU_12 Early, NU_9/10 Night). Fine. CT37-39 not in Day/Early. HN2 not used elsewhere. TR43 not used.
+
+Night pool:
+Need per day:
+Mon: N2,C2,T1,H0 total5
+Tue: H1,N2,C3,T1 total7
+Wed: H1,N2,C3,T0 total6
+Thu: H1,N2,C3,T1 total7
+Fri: N1,C2,T1 total4
+Sat: N1,C2,T1 total4
+Sun: H1,N1,C1,T1 total4
+Need pool with H1, N2, C3, T1. Use:
+Head HN_0 for Night all needed: Tue,Wed,Thu,Sun (and maybe Mon? no H min but can extra if needed? no need). History Night; Monday if off. If we assign HN0 Tue-Sun? Need check for H. We only need Tue,Wed,Thu,Sun. If HN0 works Night Tue,Wed,Thu; Off Fri/Sat? Actually Sat H0. Sun Night. Transitions: Night Tue->Night Wed allowed, Night->Off allowed, Off->Night allowed. Fine. Monday we can keep Off? History Night-> Off Monday allowed. Yes.
+Nurses: NU_9 (history Night) and NU_10, maybe NU_11. Need N2 most days. Assign NU_9 and NU_10 Night on Mon-Thu? Check history NU_9 Night Monday Night allowed. Consecutive Night allowed. For Fri N1, Sat N1, Sun N1. We can assign NU_9 all 7 nights (Night->Night allowed). NU_10 Mon-Thu maybe. Need N2 Tue etc. Use NU_9 every day N1, NU_10 for second N Mon-Thu, and maybe? Fri need N1, so only NU_9. Sat N1 NU_9. Sun N1 NU_9. Good.
+Caretakers: Need C2 Mon, C3 Tue-Thu, C2 Fri/Sat, C1 Sun. Use CT? Need careful histories:
+- CT_34 history Night. Could assign Night all week. Good.
+- CT_33 history Late. If Monday Night allowed (Late->Night allowed, since Late forbids Early,Day; Night allowed). Then if Night Mon->Night Tue allowed. We can use CT_33 Night. However CT_33 not used Day? I removed CT33 from Day. Good.
+- NU_11 history Night, skills N,C. Could use as Caretaker to cover C, but assigned Night all? Use as C on Night. History Night -> Night allowed. Need C3 Tue-Thu. Use CT_34, CT_33, NU_11 as C. Mon C2 maybe CT34, CT33. Tue-Thu CT33,CT34,NU11. Fri C2 CT33,CT34. Sat C2 CT33,CT34. Sun C1 CT33. Check CT33 last Late to Monday Night allowed; then consecutive Night okay.
+- NU_11 can be Caretaker Night; not used elsewhere.
+Trainee: Need T Mon,Tue,Thu,Fri,Sat,Sun (Wed T0). Use TR_40? History Night. Monday Night okay. Consecutive Night allowed. Need T1. Use TR_40 Night on Mon,Tue,Thu,Fri,Sat,Sun (off Wed maybe or extra not needed). But if TR40 works Night Mon, Tue, Off Wed, Night Thu... Off breaks. All Night->Night allowed. History Night Monday Night allowed. Good.
+Need check no conflicts: HN_0 Night; NU9,NU10 Night; CT33,CT34 Night; NU11 C Night; TR40 Night. CT38 is Late, not Night. Good.
+
+Now we have assigned daily coverage for each shift. Need verify all minimum coverages exactly per day. Need also produce roster for all 50 nurses each of 7 days with Off or assigned. We need build complete list 350 records. Need assign for every nurse-day. For each nurse, we know their assigned shifts from pools per day. Need fill Off for rest. Need ensure no nurse accidentally assigned two shifts same day. Need check all pools disjoint by nurse ID except possible? Let's list assigned nurse IDs by shift pools:
+Early: HN_1, NU_12, NU_21, CT_28, CT_29, CT_30, CT_31, TR_41.
+Day: HN_4, NU_13, NU_14, NU_15, CT_32, CT_35, CT_36, TR_42.
+Late: HN_2, NU_16, NU_17, NU_18, CT_37, CT_38, CT_39, TR_43.
+Night: HN_0, NU_9, NU_10, NU_11, CT_33, CT_34, TR_40.
+Also I assigned some CTs maybe CT33 originally? Night. CT38 late. CT34 night. Good.
+Unassigned: HN_3, HN_5, NU_6,NU_7,NU_8,NU_19,NU_20,NU_21? Wait NU21 Early. NU_22,NU23,NU24,NU25,NU26,NU27, CT_28-31 early, etc. Need include all with Off if not assigned. Some assigned only certain days.
+
+Need build day-by-day roster records. Could produce roster array sorted by day or nurse? Output shape roster list of records each nurse-day. Need include every nurse-day exactly once. Order likely can be nurse-day or day-nurse; no specified. We can choose day then nurse sorted? Need ensure every nurse exactly one per day. I can generate per day all 50 nurse records. Or per nurse 7 records. More manageable maybe per nurse: For each nurse, list Mon-Sun records. But need ensure coverage. Need be careful to include all 50 nurses, each 7 days. 350 records. Need avoid missing. Let's create a table for each nurse's week assignments, using pool schedules above. Then output roster maybe nurse by nurse days. Since JSON large, risk errors. Need systematically construct.
+
+Let's define daily assignments per shift from earlier explicitly:
+
+Early daily:
+Mon: N1 = NU_12; C2 = CT_28, CT_29. (No T/H)
+Tue: H1=HN_1; N1=NU_12; C4=CT_28,CT_29,CT_30,CT_31; T1=TR_41.
+Wed: H1=HN_1; N1=NU_12; C2=CT_28,CT_29; T1=TR_41.
+Thu: H1=HN_1; N1=NU_12; C4=CT_28,CT_29,CT_30,CT_31; T0.
+Fri: H1=HN_1; N2=NU_12,NU_21; C3=CT_28,CT_29,CT_30; T1=TR_41.
+Sat: N1=NU_12; T1=TR_41. (C0)
+Sun: N1=NU_12; C1=CT_28. (T0)
+Need check Mon Early C2: I had CT28,CT29. Good.
+
+Day daily:
+Mon: N3=NU_13,NU_14,NU_15; C2=CT_32,CT_35; T1=TR_42.
+Tue: N1=NU_13; C3=CT_32,CT_35,CT_36; T1=TR_42.
+Wed: N3=NU_13,NU_14,NU_15; C2=CT_32,CT_35; T1=TR_42.
+Thu: H1=HN_4; N2=NU_13,NU_14; C2=CT_32,CT_35; T1=TR_42.
+Fri: N2=NU_13,NU_14; C3=CT_32,CT_35,CT_36; T1=TR_42.
+Sat: N1=NU_13; C1=CT_32.
+Sun: N1=NU_13; C1=CT_32.
+No other.
+
+Late daily:
+Mon: N2=NU_16,NU_17; C3=CT_37,CT_38,CT_39; T1=TR_43.
+Tue: N2=NU_16,NU_17; C3=CT_37,CT_38,CT_39; T1=TR_43.
+Wed: N2=NU_16,NU_17; C3=CT_37,CT_38,CT_39; T1=TR_43.
+Thu: N3=NU_16,NU_17,NU_18; C3=CT_37,CT_38,CT_39; T1=TR_43.
+Fri: N2=NU_16,NU_17; C2=CT_37,CT_38; T1=TR_43. (CT39 off)
+Sat: H1=HN_2; N1=NU_16; C2=CT_37,CT_38. (No T)
+Sun: N1=NU_16; C1=CT_37; T1=TR_43.
+
+Night daily:
+Mon: N2=NU_9,NU_10; C2=CT_33,CT_34; T1=TR_40. (H none)
+Tue: H1=HN_0; N2=NU_9,NU_10; C3=CT_33,CT_34,NU_11; T1=TR_40.
+Wed: H1=HN_0; N2=NU_9,NU_10; C3=CT_33,CT_34,NU_11; T0. (I earlier said T0, so TR40 off Wed)
+Thu: H1=HN_0; N2=NU_9,NU_10; C3=CT_33,CT_34,NU_11; T1=TR_40.
+Fri: N1=NU_9; C2=CT_33,CT_34; T1=TR_40.
+Sat: N1=NU_9; C2=CT_33,CT_34; T1=TR_40.
+Sun: H1=HN_0; N1=NU_9; C1=CT_33; T1=TR_40.
+Note NU_10 only Mon-Thu. HN0 Tue,Wed,Thu,Sun. Need succession for HN0: Mon Off, Tue Night, Wed Night, Thu Night, Fri Off, Sat Off, Sun Night. Night->Night allowed, Off transitions okay. Monday from history Night to Off okay. Good.
+NU_9 Night all 7 days. History Night -> Mon Night allowed; consecutive Night allowed.
+NU_10 Mon-Thu Night. History Off? NU_10 history Off, fine. Night consecutive.
+NU_11 Tue-Thu C Night. History Night, but Monday Off; Tue Night. Night->Night etc.
+CT33 Night all 7 days? Mon C, Tue C, Wed C, Thu C, Fri C, Sat C, Sun C. History Late -> Mon Night allowed (Late->Night). Then Night->Night allowed. Good.
+CT34 Night all 7 days? Mon-Sat C, Sun Off? Wait Night C Sun only CT33; CT34 not scheduled Sun. Schedule: Mon-Sat CT34 C. History Night -> Mon Night allowed. Consecutive Night allowed. Sun Off. Good.
+TR40 Night Mon,Tue, Thu,Fri,Sat,Sun; Off Wed. History Night Mon Night allowed. Night sequences allowed. Tue Night -> Wed Off -> Thu Night okay.
+All good.
+
+Now need produce each nurse day records. Let's create for each of 50 nurses their Mon-Sun assignment (shift, skill) or Off. Need include skill exact name. For Off skill null.
+
+For early pool nurses:
+HN_1: Mon Off; Tue Early HeadNurse; Wed Early HeadNurse; Thu Early HeadNurse; Fri Early HeadNurse; Sat Off; Sun Off. Check history last Late to Mon Off okay. Consecutive Early H Tue-Fri. Skill HeadNurse each. Could use Nurse? Requirements are HeadNurse for Tue-Fri Early, so skill HeadNurse. HN1 possesses. Good.
+HN_4: Mon Off; Tue Off; Wed Off; Thu Day HeadNurse; Fri Off; Sat Off; Sun Off.
+HN_2: Sat Late HeadNurse; other Off.
+HN_0: Tue Night HeadNurse; Wed Night HeadNurse; Thu Night HeadNurse; Sun Night HeadNurse; Mon Off; Fri Off; Sat Off.
+HN_3: all Off (or could assign but no need). Need ensure coverage doesn't require; Off.
+HN_5: all Off.
+
+NU_12: Early Nurse all days? Mon Early Nurse, Tue Early Nurse, Wed Early Nurse, Thu Early Nurse, Fri Early Nurse, Sat Early Nurse, Sun Early Nurse. Yes assigned every day N1 Early. History Early -> Mon Early allowed. Consecutive Early.
+NU_21: Fri Early Nurse, other Off. (Check history Early, if Tue? no only Fri; Off before). Good.
+
+NU_13: Day Nurse all days? Mon Day Nurse, Tue Day Nurse, Wed Day Nurse, Thu Day Nurse, Fri Day Nurse, Sat Day Nurse, Sun Day Nurse. Yes every day N (some days N1). History Off? NU13 history Off; Mon Day allowed. Consecutive Day allowed.
+NU_14: Mon Day Nurse, Tue Off? Wait Day Tue N1 only NU13, no NU14. Wed Day Nurse, Thu Day Nurse, Fri Day Nurse, Sat Off, Sun Off. Let's list: Mon Day Nurse; Tue Off; Wed Day Nurse; Thu Day Nurse; Fri Day Nurse; Sat Off; Sun Off. Check Tue Off between Mon/Wed. Day allowed.
+NU_15: Mon Day Nurse, Tue Off, Wed Day Nurse, Thu Off, Fri Off, Sat Off, Sun Off. We didn't use Thu/Fri. Yes.
+NU_16: Late Nurse: Mon Late Nurse, Tue Late Nurse, Wed Late Nurse, Thu Late Nurse, Fri Late Nurse, Sat Late Nurse, Sun Late Nurse? Wait Sat schedule N1=NU_16; Sun N1=NU_16. Yes all 7 days Late Nurse. Check history Off? NU16 history Off. Consecutive Late allowed.
+NU_17: Mon Late Nurse, Tue Late Nurse, Wed Late Nurse, Thu Late Nurse, Fri Late Nurse, Sat Off, Sun Off. (Thu yes N3 includes NU17). 
+NU_18: Thu Late Nurse only; other Off.
+NU_9: Night Nurse all 7 days. History Night -> Mon Night allowed. Consecutive Night.
+NU_10: Mon Night Nurse, Tue Night Nurse, Wed Night Nurse, Thu Night Nurse, Fri Off, Sat Off, Sun Off.
+NU_11: Tue Night Caretaker, Wed Night Caretaker, Thu Night Caretaker; other Off. Need skill Caretaker for coverage C. NU_11 possesses. History Night last_shift, Monday Off; transition Tue? Off Monday breaks, no issue. Night->Night allowed. Note on Tue Night after Off Monday. Good.
+NU_6,NU_7,NU_8,NU_19,NU_20,NU_22-27 all Off? Need ensure not used. Yes.
+CT_28: Early Caretaker on Mon,Tue,Wed,Thu,Fri,Sun? Let's check Early: Mon CT28, Tue CT28, Wed CT28, Thu CT28, Fri CT28, Sat not, Sun CT28. So Sat Off. Schedule:
+Mon Early Caretaker
+Tue Early Caretaker
+Wed Early Caretaker
+Thu Early Caretaker
+Fri Early Caretaker
+Sat Off
+Sun Early Caretaker
+History Off; consecutive Early allowed even with Sat Off and Sun Early after Off. Skill Caretaker.
+CT_29: Mon Early Caretaker, Tue Early Caretaker, Wed Early Caretaker, Thu Early Caretaker, Fri Early Caretaker. Sat Off, Sun Off.
+CT_30: Tue Early Caretaker, Thu Early Caretaker, Fri Early Caretaker; other Off. Wait also? Early Tue C4 uses CT30, Thu C4 CT30, Fri C3 CT30. Mon no, Wed no. Good.
+CT_31: Tue Early Caretaker, Thu Early Caretaker; other Off.
+CT_32: Day Caretaker all days? Mon C, Tue C, Wed C, Thu C, Fri C, Sat C, Sun C. Yes scheduled every day Day Caretaker.
+CT_35: Day Caretaker Mon-Fri? Mon C, Tue C, Wed C, Thu C, Fri C, Sat Off, Sun Off. Yes.
+CT_36: Tue Day Caretaker, Fri Day Caretaker; other Off.
+CT_37: Late Caretaker Mon,Tue,Wed,Thu,Fri,Sat,Sun? Let's check Late: Mon C, Tue C, Wed C, Thu C, Fri C, Sat C, Sun C. Yes every day Late Caretaker.
+CT_38: Late Caretaker Mon,Tue,Wed,Thu,Fri,Sat; Sun Off? Late: Mon C3 includes, Tue, Wed, Thu, Fri C2 includes, Sat C2 includes, Sun only CT37. So CT38 Mon-Sat Late Caretaker, Sun Off.
+CT_39: Mon Late C, Tue Late C, Wed Late C, Thu Late C, Fri Off, Sat Off, Sun Off. (From Late schedule: Mon-Wed C3, Thu C3, Fri no, Sat no, Sun no). Good.
+CT_33: Night Caretaker all days? Mon C, Tue C, Wed C, Thu C, Fri C, Sat C, Sun C. Yes every day Night Caretaker.
+CT_34: Night Caretaker Mon,Tue,Wed,Thu,Fri,Sat; Sun Off. (Sun only CT33). Good.
+CT_32 etc history considerations? CT32 Off, CT35 Day, CT36 Off, CT37 Day, CT38 Late, CT39 Off. We checked Monday transitions: CT35 history Day -> Day allowed; CT37 history Day -> Late allowed; CT38 Late -> Late allowed; CT33 Late -> Night allowed; CT34 Night -> Night allowed; CT28 etc Off. Good.
+TR_41: Early Trainee Tue, Wed, Fri, Sat; other Off? Wait Mon Early T0, Thu T0, Sun T0. Schedule Tue Early, Wed Early, Fri Early, Sat Early. Also? I need check Early trainee:
+Tue T1 TR41
+Wed T1 TR41
+Thu T0
+Fri T1 TR41
+Sat T1 TR41
+Mon T0
+Sun T0
+So TR41: Mon Off, Tue Early Trainee, Wed Early Trainee, Thu Off, Fri Early Trainee, Sat Early Trainee, Sun Off. Need check succession: Tue Early->Wed Early allowed; Wed Early->Thu Off; Fri Early->Sat Early. History Off. Good.
+TR_42: Day Trainee Mon-Fri? Day T: Mon TR42, Tue TR42, Wed TR42, Thu TR42, Fri TR42; Sat/Sun T0. So TR42 Mon-Fri Day Trainee, Sat/Sun Off. History Off? TR42 history Off. Consecutive Day allowed.
+TR_43: Late Trainee Mon,Tue,Wed,Thu,Fri,Sat? Sat T0, wait Late Sat has no T. Sun T1. Let's list Late:
+Mon TR43 T1
+Tue TR43 T1
+Wed TR43 T1
+Thu TR43 T1
+Fri TR43 T1
+Sat T0 (no)
+Sun TR43 T1
+So TR43: Mon Late Trainee, Tue Late Trainee, Wed Late Trainee, Thu Late Trainee, Fri Late Trainee, Sat Off, Sun Late Trainee. History Late? Wait TR43 history? TR_43 last_shift "Day" according to input? Let's check: TR_43: last_shift "Day". Yes Day -> Monday Late allowed (Day no forbidden). Consecutive Late. Off Sat; Sun Late after Off allowed. Good.
+TR_40: Night Trainee Mon, Tue, Thu, Fri, Sat, Sun? Let's list Night:
+Mon TR40 T1
+Tue TR40 T1
+Wed T0 (no)
+Thu TR40 T1
+Fri TR40 T1
+Sat TR40 T1
+Sun TR40 T1
+So TR40: Mon Night Trainee, Tue Night Trainee, Wed Off, Thu Night Trainee, Fri Night Trainee, Sat Night Trainee, Sun Night Trainee. History Night -> Monday Night allowed. Night->Night allowed. Off Wed breaks, okay.
+Other trainees TR44-49 all Off.
+
+Need verify coverage for each day after building. Let's do day-by-day check using assignments to ensure all minima and no missing.
+
+Monday:
+Early: NU12 (Nurse), CT28/CT29 (Caretaker) -> N1, C2 yes.
+Day: NU13,NU14,NU15 (Nurse x3), CT32,CT35 (C x2), TR42 (T1). H0 yes.
+Late: NU16,NU17 (N2), CT37,CT38,CT39 (C3), TR43 T1. H0.
+Night: NU9,NU10 (N2), CT33,CT34 (C2), TR40 T1. H0.
+All coverage minima? Let's compare table:
+Mon Early H0 N1 C2 T0 yes.
+Day H0 N3 C2 T1 yes.
+Late H0 N2 C3 T1 yes.
+Night H0 N2 C2 T1 yes.
+Total assignments: Early3 + Day6 + Late6 + Night5 =20. All nurses distinct? Check Monday assignments:
+Early: NU12, CT28,CT29.
+Day: NU13,NU14,NU15, CT32,CT35, TR42.
+Late: NU16,NU17, CT37,CT38,CT39, TR43.
+Night: NU9,NU10, CT33,CT34, TR40.
+Distinct? Yes NU12, NU13-15, NU16-17, NU9-10, CT28-29, CT32,35,37,38,39,33,34, TR42,43,40. No overlap. Good.
+Check forbidden succession Monday from history:
+History last shift:
+HN0 Night -> Monday Off (allowed; if Night then Off okay)
+HN1 Late -> Mon Off (allowed)
+HN2 Off -> Off
+HN3 Off
+HN4 Day -> Off
+HN5 Off
+NU6 Late -> Off
+NU7 Off
+NU8 Off
+NU9 Night -> Mon Night (allowed, Night->Night? Actually we check previous last_shift to Monday. If last_shift Night, forbidden next shifts Early,Day,Late. Night is allowed. Good.)
+NU10 Off -> Night allowed.
+NU11 Night -> Off (allowed)
+NU12 Early -> Early allowed (no restrictions from Early)
+NU13 Off -> Day allowed.
+NU14 Off -> Day allowed.
+NU15 Off -> Day allowed.
+NU16 Off -> Late allowed.
+NU17 Off -> Late allowed.
+NU18 Off -> Off.
+NU19 Off, etc.
+NU21 Early? history Early -> Mon Off.
+NU24 Late -> Off.
+NU23 Day -> Off.
+NU26 Day -> Off.
+CT28 Off -> Early allowed.
+CT29 Off -> Early.
+CT30 Off -> Off.
+CT31 Off -> Off.
+CT32 Off -> Day.
+CT33 Late -> Night allowed.
+CT34 Night -> Night allowed (Night->Night).
+CT35 Day -> Day allowed.
+CT36 Off -> Off.
+CT37 Day -> Late allowed.
+CT38 Late -> Late allowed.
+CT39 Off -> Off.
+TR40 Night -> Night allowed.
+TR41 Off -> Off.
+TR42 Off -> Off.
+TR43 Day -> Late allowed (Day no restrictions).
+TR45 Late -> Off.
+All good.
+
+Tuesday:
+Early: HN1 (H), NU12 (N), CT28-31 (C4), TR41 (T). Count H1 N1 C4 T1 yes.
+Day: NU13 (N1), CT32,CT35,CT36 (C3), TR42 T1. H0 yes.
+Late: NU16,NU17 (N2), CT37,38,39 (C3), TR43 T1. yes.
+Night: HN0 H1, NU9,NU10 N2, CT33,CT34,NU11 C3, TR40 T1. yes.
+Distinct? Check HN1 early, HN0 night. NU12 early, NU13 day, NU16-17 late, NU9-10 night, NU11 night C. CT28-31 early, CT32/35/36 day, CT37/38/39 late, CT33/34 night. TR41 early, TR42 day, TR43 late, TR40 night. All distinct. Good.
+Check consecutive transitions Mon->Tue for each working both:
+- NU12 Early Mon -> Early Tue allowed.
+- CT28 Early Mon -> Early Tue allowed; CT29 same.
+- NU13 Day Mon -> Day Tue allowed.
+- CT32 Day Mon -> Day Tue allowed; CT35 Day Mon -> Day Tue.
+- NU14 Mon Day -> Tue Off.
+- NU15 Mon Day -> Off.
+- NU16 Late Mon -> Late Tue allowed.
+- NU17 Late Mon -> Late Tue.
+- CT37 Late Mon -> Late Tue; CT38 Late Mon -> Late Tue; CT39 Late Mon -> Late Tue.
+- TR43 Late Mon -> Late Tue allowed.
+- NU9 Night Mon -> Night Tue allowed.
+- NU10 Night Mon -> Night Tue.
+- CT33 Night Mon -> Night Tue; CT34 Night Mon -> Night Tue.
+- TR40 Night Mon -> Night Tue.
+- HN1 Mon Off -> Tue Early no issue.
+- HN0 Mon Off? Actually HN0 Mon Off -> Tue Night no issue.
+- CT30 Mon Off -> Tue Early no issue.
+- CT31 Off -> Tue Early.
+- TR41 Off -> Tue Early.
+- CT36 Mon Off -> Tue Day.
+- HN4 Off -> Off.
+- HN2 Off -> Off.
+- NU11 Mon Off -> Tue Night C no issue.
+All good.
+
+Wednesday:
+Early: HN1 H, NU12 N, CT28,CT29 C2, TR41 T. H1 N1 C2 T1 yes.
+Day: NU13,NU14,NU15 N3, CT32,CT35 C2, TR42 T1. yes.
+Late: NU16,NU17 N2, CT37,CT38,CT39 C3, TR43 T1. yes.
+Night: HN0 H1, NU9,NU10 N2, CT33,CT34,NU11 C3, no T (T0). yes.
+Distinct? yes.
+Transitions Tue->Wed:
+HN1 Early->Early okay. NU12 Early->Early. CT28,29. TR41 Tue Early -> Wed Early. CT30 Tue Early -> Wed Off. CT31 Tue Early -> Off.
+NU13 Day->Day. CT32/35/36 Day Tue -> Wed Day for 32,35; CT36 off. TR42 Day->Day.
+NU16/17 Late->Late; CT37/38/39 Late->Late; TR43 Late->Late.
+HN0 Tue Night -> Wed Night allowed. NU9/10 Night->Night. CT33/34 Night->Night; NU11 Tue Night C -> Wed Night C; TR40 Tue Night -> Wed Off (Off allowed).
+Good.
+
+Thursday:
+Early: HN1 H, NU12 N, CT28-31 C4. (T0) yes.
+Day: HN4 Day HeadNurse; NU13,NU14 N2; CT32,CT35 C2; TR42 T1. Day H1 N2 C2 T1 yes.
+Late: NU16,17,18 N3; CT37,38,39 C3; TR43 T1. yes.
+Night: HN0 H1; NU9,NU10 N2; CT33,CT34,NU11 C3; TR40 T1. yes.
+Distinct? HN4 day, HN0 night. yes.
+Transitions Wed->Thu:
+HN1 Early->Early; NU12; CT28,29; CT30 Wed Off->Thu Early; CT31 off->early; TR41 Wed Early->Thu Off.
+NU13 Day->Day; NU14 Day->Day; NU15 Wed Day->Thu Off? Wait NU15 Wed Day yes, Thu Off. all okay.
+HN4 Wed Off->Thu Day.
+CT32/35 Day->Day; TR42 Day->Day.
+Late all Wed->Thu same late; NU18 Wed Off->Thu Late; CT etc.
+Night HN0 Wed Night->Thu Night; NU9/10; CT33/34; NU11; TR40 Wed Off->Thu Night. Night->Night allowed. Good.
+
+Friday:
+Early: HN1 H; NU12,NU21 N2; CT28,CT29,CT30 C3; TR41 T1. Count H1 N2 C3 T1 yes.
+Day: NU13,14 N2; CT32,35,36 C3; TR42 T1. H0 yes.
+Late: NU16,17 N2; CT37,38 C2; TR43 T1. Total N2 C2 T1 yes.
+Night: NU9 N1; CT33,34 C2; TR40 T1. H0. yes.
+Distinct? Check CT30 Early on Fri, but CT30 was Off Thu? Actually CT30 Thu Early yes! Wait CT30 scheduled Thu Early C4 and Fri Early C3. Fine. No other shift.
+NU21 only Fri Early.
+Transitions Thu->Fri:
+HN1 Early->Early. NU12 Early->Early. CT28/29/30 Early->Early. CT31 Thu Early -> Fri Off. TR41 Thu Off -> Fri Early.
+NU13 Day->Day; NU14 Day->Day. CT32/35 Day->Day; CT36 Thu Off -> Fri Day; TR42 Day->Day.
+NU16/17 Late->Late; CT37/38 Late->Late; CT39 Thu Late -> Fri Off; TR43 Late->Late.
+HN0 Thu Night -> Fri Off. NU9 Night->Night; NU10 Thu Night -> Fri Off; CT33/34 Night->Night; NU11 Thu Night C -> Fri Off; TR40 Thu Night -> Fri Night. Night->Night okay.
+Good.
+
+Saturday:
+Early: NU12 N1, TR41 T1 (C0). yes.
+Day: NU13 N1, CT32 C1. yes.
+Late: HN2 H1, NU16 N1, CT37,CT38 C2. T0. yes.
+Night: NU9 N1, CT33,CT34 C2, TR40 T1. H0. yes.
+Distinct? yes.
+Transitions Fri->Sat:
+HN1 Fri Early -> Sat Off.
+NU12 Early->Early. NU21 Fri Early -> Sat Off. CT28 Fri Early -> Sat Off; CT29/30 off; TR41 Fri Early -> Sat Early allowed.
+NU13 Day Fri -> Sat Day; CT32 Day Fri -> Sat Day; CT35/36 off; TR42 Fri Day -> Sat Off.
+HN2 Fri Off -> Sat Late H. NU16 Late Fri -> Late Sat; CT37/38 Late->Late; TR43 Late Fri -> Sat Off.
+NU9 Night Fri -> Night Sat; CT33/34 Night Fri -> Night Sat; TR40 Night Fri->Night Sat. Good.
+
+Sunday:
+Early: NU12 N1, CT28 C1. (T0 H0) yes.
+Day: NU13 N1, CT32 C1. yes.
+Late: NU16 N1, CT37 C1, TR43 T1. yes.
+Night: HN0 H1, NU9 N1, CT33 C1, TR40 T1. yes.
+Distinct? yes.
+Transitions Sat->Sun:
+NU12 Early->Early; CT28 Sat Off -> Sun Early.
+NU13 Day->Day; CT32 Day->Day.
+NU16 Late->Late; CT37 Late->Late; CT38 Sat Late -> Sun Off; TR43 Sat Off -> Sun Late.
+HN0 Sat Off -> Sun Night; NU9 Night Sat->Night Sun; CT33 Night Sat->Night Sun; CT34 Sat Night->Sun Off; TR40 Sat Night->Sun Night. Night->Night allowed. Good.
+
+Coverage fully met. Need output every nurse-day exactly once. Need ensure every nurse included including all Off. We'll create roster array. Need decide order. Could output by nurse_id in input order, each with 7 days. This makes verification of complete maybe. Need include schema_version, status candidate, explanation brief, roster.
+
+Need be meticulous in JSON. 350 records. Need not include instance_id etc. Output one JSON object. Need avoid markdown.
+
+Let's construct roster. I can output as list of 350 objects. Need ensure each nurse-day exactly once. I'll use input order nurses. For each nurse, list days Mon..Sun. For Off: {"nurse_id":"...","day":"Mon","shift":"Off","skill":null}. For working: shift exact names "Early","Day","Late","Night"; skill exact "HeadNurse","Nurse","Caretaker","Trainee". Case exact.
+
+Let's compile per nurse.
+
+I'll create helper table for each nurse with [Mon,Tue,Wed,Thu,Fri,Sat,Sun] as (shift,skill) or Off.
+
+We'll list nurses in input order:
+
+HN_0
+HN_1
+HN_2
+HN_3
+HN_4
+HN_5
+NU_6
+NU_7
+NU_8
+NU_9
+NU_10
+NU_11
+NU_12
+NU_13
+NU_14
+NU_15
+NU_16
+NU_17
+NU_18
+NU_19
+NU_20
+NU_21
+NU_22
+NU_23
+NU_24
+NU_25
+NU_26
+NU_27
+CT_28
+CT_29
+CT_30
+CT_31
+CT_32
+CT_33
+CT_34
+CT_35
+CT_36
+CT_37
+CT_38
+CT_39
+TR_40
+TR_41
+TR_42
+TR_43
+TR_44
+TR_45
+TR_46
+TR_47
+TR_48
+TR_49
+
+Need assign each.
+
+Let's prepare per nurse:
+
+HN_0:
+Mon Off
+Tue Night HeadNurse
+Wed Night HeadNurse
+Thu Night HeadNurse
+Fri Off
+Sat Off
+Sun Night HeadNurse
+
+HN_1:
+Mon Off
+Tue Early HeadNurse
+Wed Early HeadNurse
+Thu Early HeadNurse
+Fri Early HeadNurse
+Sat Off
+Sun Off
+
+HN_2:
+Mon Off
+Tue Off
+Wed Off
+Thu Off
+Fri Off
+Sat Late HeadNurse
+Sun Off
+
+HN_3: all Off.
+
+HN_4:
+Mon Off
+Tue Off
+Wed Off
+Thu Day HeadNurse
+Fri Off
+Sat Off
+Sun Off
+
+HN_5 all Off.
+
+NU_6 all Off? Yes no assignments. But check history last Late; Off all week okay. Need include all days Off. NU_7 all Off.
+NU_8 all Off.
+
+NU_9:
+Mon Night Nurse
+Tue Night Nurse
+Wed Night Nurse
+Thu Night Nurse
+Fri Night Nurse
+Sat Night Nurse
+Sun Night Nurse
+
+NU_10:
+Mon Night Nurse
+Tue Night Nurse
+Wed Night Nurse
+Thu Night Nurse
+Fri Off
+Sat Off
+Sun Off
+
+NU_11:
+Mon Off
+Tue Night Caretaker
+Wed Night Caretaker
+Thu Night Caretaker
+Fri Off
+Sat Off
+Sun Off
+
+NU_12:
+Mon Early Nurse
+Tue Early Nurse
+Wed Early Nurse
+Thu Early Nurse
+Fri Early Nurse
+Sat Early Nurse
+Sun Early Nurse
+
+NU_13:
+Mon Day Nurse
+Tue Day Nurse
+Wed Day Nurse
+Thu Day Nurse
+Fri Day Nurse
+Sat Day Nurse
+Sun Day Nurse
+
+NU_14:
+Mon Day Nurse
+Tue Off
+Wed Day Nurse
+Thu Day Nurse
+Fri Day Nurse
+Sat Off
+Sun Off
+
+NU_15:
+Mon Day Nurse
+Tue Off
+Wed Day Nurse
+Thu Off
+Fri Off
+Sat Off
+Sun Off
+
+NU_16:
+Mon Late Nurse
+Tue Late Nurse
+Wed Late Nurse
+Thu Late Nurse
+Fri Late Nurse
+Sat Late Nurse
+Sun Late Nurse
+
+NU_17:
+Mon Late Nurse
+Tue Late Nurse
+Wed Late Nurse
+Thu Late Nurse
+Fri Late Nurse
+Sat Off
+Sun Off
+
+NU_18:
+Mon Off
+Tue Off
+Wed Off
+Thu Late Nurse
+Fri Off
+Sat Off
+Sun Off
+
+NU_19 all Off
+NU_20 all Off
+NU_21:
+Mon Off
+Tue Off
+Wed Off
+Thu Off
+Fri Early Nurse
+Sat Off
+Sun Off
+NU_22 all Off
+NU_23 all Off
+NU_24 all Off
+NU_25 all Off
+NU_26 all Off
+NU_27 all Off
+
+CT_28:
+Mon Early Caretaker
+Tue Early Caretaker
+Wed Early Caretaker
+Thu Early Caretaker
+Fri Early Caretaker
+Sat Off
+Sun Early Caretaker
+
+CT_29:
+Mon Early Caretaker
+Tue Early Caretaker
+Wed Early Caretaker
+Thu Early Caretaker
+Fri Early Caretaker
+Sat Off
+Sun Off
+
+CT_30:
+Mon Off
+Tue Early Caretaker
+Wed Off
+Thu Early Caretaker
+Fri Early Caretaker
+Sat Off
+Sun Off
+Wait Check CT30 on Wed? Early Wed C2 = CT28,CT29, so CT30 Off. Yes. Mon Off. Good.
+
+CT_31:
+Mon Off
+Tue Early Caretaker
+Wed Off
+Thu Early Caretaker
+Fri Off
+Sat Off
+Sun Off
+
+CT_32:
+Mon Day Caretaker
+Tue Day Caretaker
+Wed Day Caretaker
+Thu Day Caretaker
+Fri Day Caretaker
+Sat Day Caretaker
+Sun Day Caretaker
+
+CT_33:
+Mon Night Caretaker
+Tue Night Caretaker
+Wed Night Caretaker
+Thu Night Caretaker
+Fri Night Caretaker
+Sat Night Caretaker
+Sun Night Caretaker
+
+CT_34:
+Mon Night Caretaker
+Tue Night Caretaker
+Wed Night Caretaker
+Thu Night Caretaker
+Fri Night Caretaker
+Sat Night Caretaker
+Sun Off
+
+CT_35:
+Mon Day Caretaker
+Tue Day Caretaker
+Wed Day Caretaker
+Thu Day Caretaker
+Fri Day Caretaker
+Sat Off
+Sun Off
+
+CT_36:
+Mon Off
+Tue Day Caretaker
+Wed Off
+Thu Off? Wait Day Thu C2 = CT32,CT35, no CT36. Fri Day C3 = CT32,CT35,CT36. So CT36: Tue Day, Fri Day. Mon Off, Wed Off, Thu Off, Sat Off, Sun Off. Yes.
+CT_37:
+Mon Late Caretaker
+Tue Late Caretaker
+Wed Late Caretaker
+Thu Late Caretaker
+Fri Late Caretaker
+Sat Late Caretaker
+Sun Late Caretaker
+
+CT_38:
+Mon Late Caretaker
+Tue Late Caretaker
+Wed Late Caretaker
+Thu Late Caretaker
+Fri Late Caretaker
+Sat Late Caretaker
+Sun Off
+
+CT_39:
+Mon Late Caretaker
+Tue Late Caretaker
+Wed Late Caretaker
+Thu Late Caretaker
+Fri Off
+Sat Off
+Sun Off
+
+TR_40:
+Mon Night Trainee
+Tue Night Trainee
+Wed Off
+Thu Night Trainee
+Fri Night Trainee
+Sat Night Trainee
+Sun Night Trainee
+
+TR_41:
+Mon Off
+Tue Early Trainee
+Wed Early Trainee
+Thu Off
+Fri Early Trainee
+Sat Early Trainee
+Sun Off
+
+TR_42:
+Mon Day Trainee
+Tue Day Trainee
+Wed Day Trainee
+Thu Day Trainee
+Fri Day Trainee
+Sat Off
+Sun Off
+
+TR_43:
+Mon Late Trainee
+Tue Late Trainee
+Wed Late Trainee
+Thu Late Trainee
+Fri Late Trainee
+Sat Off
+Sun Late Trainee
+
+TR_44 all Off
+TR_45 all Off
+TR_46 all Off
+TR_47 all Off
+TR_48 all Off
+TR_49 all Off
+
+Need double-check CT30: On Thursday Early C4 includes CT28,29,30,31. Yes CT30 Thu Early. Friday Early C3 includes CT28,29,30. Good.
+CT31 Tue, Thu.
+
+Need ensure no nurse with history is assigned illegal Monday in our final:
+- HN_0 Off Mon no issue.
+- HN1 Off.
+- HN2 Off.
+- HN4 Off.
+- NU9 Night allowed.
+- NU11 Off.
+- NU12 Early (history Early) allowed.
+- NU13 Off? Wait final NU13 Mon Day. History NU13 "Off", allowed. Yes.
+- NU14 Off? Final NU14 Mon Day. History Off allowed.
+- NU15 Day, history Off allowed.
+- NU16 Late, history Off allowed.
+- NU17 Off? final NU17 Late, history Off allowed.
+- NU18 Off.
+- NU21 Fri only Off Monday.
+- NU24 Off, history Late -> Off allowed.
+- NU23 Off, history Day -> Off.
+- NU26 Off, history Day -> Off.
+- CT28 Early Off hist allowed.
+- CT29 Early Off hist.
+- CT30 Off.
+- CT31 Off.
+- CT32 Day Off hist.
+- CT33 Night history Late allowed (Late -> Night).
+- CT34 Night history Night allowed (Night -> Night).
+- CT35 Day history Day -> Day allowed.
+- CT36 Off.
+- CT37 Late history Day -> Late allowed.
+- CT38 Late history Late -> Late allowed.
+- CT39 Off? final CT39 Mon Late, history Off allowed.
+- TR40 Night history Night -> Night allowed.
+- TR41 Off.
+- TR42 Off? final TR42 Mon Day, history Off allowed.
+- TR43 Late history Day -> Late allowed.
+- TR45 Off.
+All good.
+
+Need consider forbidden_successions definition maybe "forbidden_successions between consecutive days, including the history last_shift to Monday". Off breaks. If previous shift Late, next Early or Day forbidden. We avoided any Late->Early/Day? Check nurse assignments across consecutive days:
+- NU9 Night all days: Night->Night allowed. Night forbidden Early/Day/Late, Night allowed.
+- CT33 Night all days allowed.
+- TR40 Night sequences with Off. Night->Night allowed.
+- HN0 Night Tue-Wed-Thu, then Off, Sun. allowed.
+- NU10 Night Mon-Thu, then Off. allowed.
+- NU11 Night Tue-Thu, Off. allowed.
+- CT34 Night Mon-Sat, Off. allowed.
+- Late workers: Late consecutive; if Late->Off allowed. None Late followed by Early/Day because if they work other shift? Check CT38 Late Mon-Sat, Off Sun. CT37 Late all days. NU16 Late all days. NU17 Late Mon-Fri, Off. TR43 Late Mon-Fri, Off Sat, Late Sun: Off breaks. HN2 only Sat Late (prev Fri Off, next Sun Off). CT39 Late Mon-Thu, Off Fri-Sun. All good.
+- Early workers: Early no forbidden successions. But what about someone works Day then Early? Only Day->Early allowed because Day has empty. Could happen? NU13 Day all days. No. CT28 Off Sat then Early Sun. CT35 Day Mon-Fri then Off. HN4 Day Thu only. TR42 Day Mon-Fri then Off. No issue.
+- If someone works Late then Off then Early okay. None.
+- What about HN1 Early Tue-Fri consecutive allowed. History Late -> Monday Off; Off breaks, Tue Early okay. Yes.
+- HN4 history Day -> Off Mon-Wed -> Day Thu allowed. 
+- NU21 history Early -> Off until Fri Early, allowed.
+- CT31 Tue Early, Thu Early with Wed Off; Early->Off->Early allowed.
+All successions fine.
+
+Need now output JSON. Must be exactly one JSON object. It will be long. Need avoid mistakes in syntax. I can put roster entries one per line? JSON allows whitespace. Ensure commas between objects. No trailing commas. Since final answer should only JSON.
+
+I should consider if explanation must be brief. "Feasible hard-constraint roster; all minimum coverages met." Fine.
+
+Need include every nurse-day exactly once. We have 50*7=350. Let's count as I output by nurse, 7 each. Need ensure no missing. I'll structure roster array with entries grouped by nurse. JSON object. Let's write carefully.
+
+Potential issue: "A nurse works at most one shift per day." satisfied. "Give each nurse exactly one record per listed day, including Off." We do 7 each.
+
+Potential issue: Multi-skilled nurses cannot fill two coverage requirements in one shift. We assign one skill. Good.
+
+Potential issue: "A working record covers exactly one skill that the nurse possesses." We assign skill possessed. Need for HN_0 HeadNurse, yes. HN_1 HeadNurse, yes. HN_2 HeadNurse, yes. HN_4 Day HeadNurse, yes. NU_11 Night Caretaker, NU_11 skills ["Nurse","Caretaker"], yes. TR Trainee yes. CT caretaker yes. NU_9 Nurse yes.
+
+Potential issue: Coverage minimum for Night Tue C3 includes NU_11 Caretaker; yes. Wed/Thu.
+
+Potential issue: T coverage on Wed Night min 0, we assign none, fine. T coverage on Sat Early T1 = TR41; Night T1 TR40. Late Sat T0. Good.
+Potential issue: On Sun Early T0, but we have Off. yes.
+
+Let's maybe create a compact roster with one line per record. Need be careful with JSON.
+
+I will begin:
+
+{
+  "schema_version": "1.0",
+  "status": "candidate",
+  "explanation": "Feasible hard-constraint roster; all minimum shift-skill coverages met.",
+  "roster": [
+    {"nurse_id":"HN_0","day":"Mon","shift":"Off","skill":null},
+...
+  ]
+}
+
+Need no markdown. Good.
+
+Now produce all entries. Let's systematically output in order listed. I'll use double quotes. Need ensure array elements separated by commas. I can format multi-line; valid.
+
+Let's write. I must be very careful with comma placement. I'll output all 350. To reduce errors, I can maybe use JSON minified but long. I'll use line per entry with trailing commas except last. Need manually manage.
+
+Let's generate.
+
+First HN_0 7:
+Mon Off, Tue Night HeadNurse, Wed Night HeadNurse, Thu Night HeadNurse, Fri Off, Sat Off, Sun Night HeadNurse.
+
+HN_1 7.
+HN_2 7.
+HN_3 7 all Off.
+HN_4 7.
+HN_5 7 all Off.
+NU_6 7 all Off.
+NU_7 all Off.
+NU_8 all Off.
+NU_9 7 Night Nurse all days.
+NU_10: Mon-Thu Night Nurse, Fri-Sun Off.
+NU_11: Mon Off, Tue-Thu Night Caretaker, Fri-Sun Off.
+NU_12: all Early Nurse.
+NU_13: all Day Nurse.
+NU_14: Mon Day, Tue Off, Wed Day, Thu Day, Fri Day, Sat Off, Sun Off.
+NU_15: Mon Day, Tue Off, Wed Day, Thu Off, Fri Off, Sat Off, Sun Off.
+NU_16: all Late Nurse.
+NU_17: Mon-Fri Late Nurse, Sat/Sun Off.
+NU_18: Mon-Wed Off, Thu Late Nurse, Fri-Sun Off.
+NU_19 all Off.
+NU_20 all Off.
+NU_21: Mon-Thu Off, Fri Early Nurse, Sat/Sun Off.
+NU_22 all Off.
+NU_23 all Off.
+NU_24 all Off.
+NU_25 all Off.
+NU_26 all Off.
+NU_27 all Off.
+CT_28: Mon-Fri Early Caretaker, Sat Off, Sun Early Caretaker.
+CT_29: Mon-Fri Early Caretaker, Sat Off, Sun Off.
+CT_30: Mon Off, Tue Early Caretaker, Wed Off, Thu Early Caretaker, Fri Early Caretaker, Sat Off, Sun Off.
+CT_31: Mon Off, Tue Early Caretaker, Wed Off, Thu Early Caretaker, Fri Off, Sat Off, Sun Off.
+CT_32: all Day Caretaker.
+CT_33: all Night Caretaker.
+CT_34: Mon-Sat Night Caretaker, Sun Off.
+CT_35: Mon-Fri Day Caretaker, Sat Off, Sun Off.
+CT_36: Mon Off, Tue Day Caretaker, Wed Off, Thu Off, Fri Day Caretaker, Sat Off, Sun Off.
+CT_37: all Late Caretaker.
+CT_38: Mon-Sat Late Caretaker, Sun Off.
+CT_39: Mon-Thu Late Caretaker, Fri-Sun Off.
+TR_40: Mon Night Trainee, Tue Night Trainee, Wed Off, Thu Night Trainee, Fri Night Trainee, Sat Night Trainee, Sun Night Trainee.
+TR_41: Mon Off, Tue Early Trainee, Wed Early Trainee, Thu Off, Fri Early Trainee, Sat Early Trainee, Sun Off.
+TR_42: Mon-Fri Day Trainee, Sat Off, Sun Off.
+TR_43: Mon-Fri Late Trainee, Sat Off, Sun Late Trainee.
+TR_44 all Off.
+TR_45 all Off.
+TR_46 all Off.
+TR_47 all Off.
+TR_48 all Off.
+TR_49 all Off.
+
+Need count all. Let's produce final JSON. Use line breaks. Ensure last object no comma. Since 350, I won't include extra comments. Let's go.

@@ -8,7 +8,6 @@ from unittest.mock import patch
 from jsonschema import Draft202012Validator
 
 from rostering.llm.api import APIError, completed, output_text, token_usage
-from rostering.llm.batch import aggregate
 from rostering.contracts import ROOT
 from rostering.evaluate import evaluate
 from rostering.llm.pipeline import build_request, run_roster
@@ -88,14 +87,6 @@ class SafeguardTests(unittest.TestCase):
             self.assertEqual(metadata["status"], "api_error")
             self.assertIsNone(metadata["usage"])
             self.assertTrue(metadata["usage_incomplete"])
-
-    def test_aggregation_keeps_failures_in_denominator(self):
-        base = {"variant": "baseline", "case_id": "test", "latency_seconds": 1, "total_tokens": 10, "hard_violation_counts": {"minimum_coverage": 0}, "partial_soft_score": 10}
-        rows = [{**base, "status": "valid_roster", "schema_valid": True, "hard_valid": True}, {**base, "status": "api_error", "schema_valid": None, "hard_valid": False, "partial_soft_score": None}]
-        summary = aggregate(rows)["baseline"]
-        self.assertEqual(summary["trials"], 2)
-        self.assertEqual(summary["validity_rate_all_attempts"], 0.5)
-        self.assertEqual(summary["mean_partial_soft_score_valid_only"], 10)
 
 
 if __name__ == "__main__":

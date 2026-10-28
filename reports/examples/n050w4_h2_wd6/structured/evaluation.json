@@ -1,0 +1,37 @@
+{
+  "instance_id": "n050w4_H0-n050w4-2_WD-n050w4-6_week0",
+  "schema_valid": true,
+  "schema_errors": [],
+  "solution_status": "candidate",
+  "evaluation_status": "evaluated",
+  "roster_complete": true,
+  "hard_valid": true,
+  "hard_violation_counts": {
+    "single_assignment": 0,
+    "minimum_coverage": 0,
+    "shift_succession": 0,
+    "required_skill": 0
+  },
+  "hard_violations": [],
+  "output_issues": [],
+  "soft_score": {
+    "preferred_coverage": 1800,
+    "shift_off_requests": 20,
+    "complete_weekends": 210,
+    "partial_total": 2030
+  },
+  "soft_scope": {
+    "included": [
+      "preferred_coverage",
+      "shift_off_requests",
+      "complete_weekends"
+    ],
+    "excluded": [
+      "consecutive_assignments",
+      "consecutive_days_off",
+      "total_assignments",
+      "total_working_weekends"
+    ],
+    "is_full_inrc2_score": false
+  }
+}
