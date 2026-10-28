@@ -38,4 +38,6 @@ The frozen [plan](../config/experiments/parity_v1.json) covers 15 independent se
 
 `uv run python scripts/run_comparison.py` saves each attempt, freezes input and source hashes, and generates the [comparison](../reports/hard_only_parity_v1.md) and README table when complete. Resume with `--resume outputs/comparison/RUN_DIRECTORY`; completed and uncertain interrupted requests are not replayed. Raw traces remain local and ignored; portable results include every attempted trial and identify incomplete runs explicitly.
 
+New runs also save a `source_snapshot/`. Replay can check the original runner against its frozen hash after reporting fixes; current model, prompt, schema and evaluator sources must still match. Exported example ZIPs are saved inside ignored `outputs/exports/`.
+
 There is no soft objective or optimality claim. The evaluator's retained soft scores are optional diagnostics. H0/H1/H2 and WD numbers identify alternative initial histories and weekly demand files, not sequential weeks.

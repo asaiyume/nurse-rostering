@@ -18,6 +18,16 @@ from rostering.llm.api import completed, output_text
 from rostering.llm.pipeline import build_request
 
 
+def verify_request_settings(request, config, plan, stage):
+    responses = config["api_style"] == "responses"
+    effort = request.get("reasoning", {}).get("effort") if responses else request.get("reasoning_effort")
+    cap = plan["audit_output_tokens"] if stage == "critique" else plan["max_output_tokens"]
+    if ("tools" in request or request.get("model") != config["model"]
+            or effort != config.get("reasoning_effort")
+            or request.get("max_output_tokens" if responses else "max_completion_tokens") != cap):
+        raise ValueError("Model settings or tool access changed")
+
+
 def verify(directory, allow_partial=False):
     manifest = json.loads((directory / "manifest.json").read_text())
     summary = json.loads((directory / "summary.json").read_text())
@@ -25,7 +35,13 @@ def verify(directory, allow_partial=False):
         raise ValueError("Comparison is not complete")
     plan = manifest["plan"]
     for name, expected_hash in manifest["source_hashes"].items():
-        if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != expected_hash:
+        path = ROOT / name
+        snapshot = directory / "source_snapshot" / name
+        # A saved runner may predate reporting-only fixes; the scheduling and
+        # evaluator code used for replay must still match the current source.
+        if name == "scripts/run_comparison.py" and snapshot.exists():
+            path = snapshot
+        if hashlib.sha256(path.read_bytes()).hexdigest() != expected_hash:
             raise ValueError("Changed benchmark source: " + name)
     cases = {c["id"]: c for c in plan["cases"]}
     inputs = {}
@@ -55,14 +71,16 @@ def verify(directory, allow_partial=False):
         metadata = json.loads((run / "metadata.json").read_text())
         if metadata["mode"] != "hard_constraints_only":
             raise ValueError("Mismatched task scope")
-        if row["variant"] == "classical" and (metadata["time_limit_seconds"] is not None or metadata["soft_method"] is not None):
+        if row["variant"] == "classical" and (metadata["time_limit_seconds"] != plan["time_limit_seconds"] or metadata["soft_method"] is not None):
             raise ValueError("Classical timeout or objective differs from the plan")
+        if row["variant"] != "classical" and row["status"] != metadata["status"]:
+            raise ValueError("Summary status differs from retained metadata")
         if row["variant"] != "classical":
             if row["status"] == "api_error" and metadata["stages"]:
                 api_failure_stages[row["variant"] + ":" + metadata["stages"][-1]["name"]] += 1
             if metadata.get("critique_incomplete"):
                 incomplete_audits[row["variant"]] += 1
-            completed_revisions[row["variant"]] += sum(s["name"] == "revision" and s["response_status"] == "stop" for s in metadata["stages"])
+            completed_revisions[row["variant"]] += sum(s["name"] == "revision" and s["response_status"] in {"stop", "completed"} for s in metadata["stages"])
             if metadata["timeout_seconds"] != plan["time_limit_seconds"] or metadata["total_timeout_seconds"] != plan["time_limit_seconds"]:
                 raise ValueError("Trial deadline settings differ from the frozen plan")
             if json.loads((run / "instance.json").read_text()) != instance:
@@ -73,8 +91,7 @@ def verify(directory, allow_partial=False):
                     _, expected_request = build_request(instance, manifest["config"], plan["max_output_tokens"], row["variant"])
                     if request != expected_request:
                         raise ValueError("Generation request differs from the frozen setup")
-                if "tools" in request or request.get("reasoning_effort") != manifest["config"]["reasoning_effort"]:
-                    raise ValueError("Model settings or tool access changed")
+                verify_request_settings(request, manifest["config"], plan, stage["name"])
                 response_path = run / "stages" / stage["name"] / "response.json"
                 if response_path.exists():
                     returned_calls += 1
@@ -82,11 +99,18 @@ def verify(directory, allow_partial=False):
                     returned_models[response.get("model", "unknown")] += 1
                     message = response.get("choices", [{}])[0].get("message", {})
                     reasoning = message.get("reasoning") or message.get("reasoning_content")
+                    if manifest["config"]["api_style"] == "responses":
+                        reasoning = any(item.get("type") == "reasoning" and
+                                        (item.get("summary") or item.get("content"))
+                                        for item in response.get("output", []))
                     if reasoning:
                         reasoning_stages[row["variant"]] += 1
-                    reasoning_tokens[row["variant"]] += (response.get("usage", {})
-                        .get("completion_tokens_details", {}).get("reasoning_tokens") or 0)
-                    schema = request.get("response_format", {}).get("json_schema", {}).get("schema")
+                    usage = response.get("usage") or {}
+                    details = usage.get("completion_tokens_details") or usage.get("output_tokens_details") or {}
+                    reasoning_tokens[row["variant"]] += details.get("reasoning_tokens") or 0
+                    schema = (request.get("text", {}).get("format", {}).get("schema")
+                              if manifest["config"]["api_style"] == "responses" else
+                              request.get("response_format", {}).get("json_schema", {}).get("schema"))
                     if schema:
                         constrained += 1
                         try:
@@ -184,8 +208,10 @@ def verify(directory, allow_partial=False):
                      f"{group['status_counts'].get('api_error', 0)} | {reasoning_tokens[variant]:,} |")
     lines += ["", "API failures are unresolved "
               "attempts, not demonstrated scheduling violations. Initial valid rosters in API-failed review trials are "
-              "reported separately: the pipeline does not silently accept an initial roster after a failed API stage. "
-              "The final protocol has no imposed deadline; server/network failures remain possible.",
+              "reported separately: the pipeline does not silently accept an initial roster after a failed API stage. " +
+              ("The final protocol has no imposed deadline; " if plan["time_limit_seconds"] is None else
+               f"The protocol has a {plan['time_limit_seconds']:g}-second limit; ") +
+              "server/network failures remain possible.",
               "", "Gateway load, caching and network time were not controlled. Reported reasoning tokens are taken from "
               "the API usage records; exposed thinking text remains in the raw response traces. Token totals "
               "sum available usage only: API-failed stages can have unreported usage, so these totals are not "

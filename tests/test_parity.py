@@ -179,9 +179,70 @@ class ParityTests(unittest.TestCase):
             metadata = json.loads(next(Path(temp).glob("*/metadata.json")).read_text())
             self.assertEqual(metadata["api_call_count"], 1)
 
+    def test_resume_persists_interruption_without_another_request(self):
+        case = self.plan["cases"][0]
+        with tempfile.TemporaryDirectory() as temp:
+            directory = Path(temp)
+            run = directory / "llm" / case["id"] / "baseline/1/original"
+            run.mkdir(parents=True)
+            path = run / "metadata.json"
+            path.write_text(json.dumps({"status": "started", "api_call_count": 1, "stages": []}))
+            with patch("rostering.llm.pipeline.request_response") as request:
+                row = self.runner["llm_trial"](case, self.instance, "baseline", 1,
+                                                self.config, self.plan, directory)
+                again = self.runner["llm_trial"](case, self.instance, "baseline", 1,
+                                                  self.config, self.plan, directory)
+            request.assert_not_called()
+            self.assertEqual(row, again)
+            self.assertEqual(row["status"], "interrupted")
+            self.assertEqual(json.loads(path.read_text())["status"], "interrupted")
+            self.assertTrue(json.loads(path.read_text())["usage_incomplete"])
+
+    def test_replay_supports_both_protocols_and_rejects_changed_effort(self):
+        verifier = runpy.run_path(str(ROOT / "scripts/verify_comparison.py"))
+        case = self.plan["cases"][0]
+        plan = {**self.plan, "cases": [case], "repetitions": 1, "time_limit_seconds": 7}
+        for style in ["chat_completions", "responses"]:
+            config = {**self.config, "api_style": style}
+            def fake_request(config, payload, timeout):
+                prompt = payload.get("input") if style == "responses" else payload["messages"][0]["content"]
+                text = "No violations." if prompt.startswith("Audit the candidate") else json.dumps(self.roster)
+                if style == "responses":
+                    return {"model": "test", "status": "completed", "output": [
+                        {"type": "message", "content": [{"type": "output_text", "text": text}]}],
+                        "usage": {"input_tokens": 1, "output_tokens": 1, "total_tokens": 2}}, 0.1
+                return response(text), 0.1
+            with self.subTest(style=style), tempfile.TemporaryDirectory() as temp:
+                directory = Path(temp)
+                (directory / "manifest.json").write_text(json.dumps({"plan": plan, "config": config, "source_hashes": {}}))
+                rows = [self.runner["classical_trial"](case, self.instance, directory, 7)]
+                with patch("rostering.llm.pipeline.request_response", side_effect=fake_request):
+                    for variant in plan["variants"]:
+                        rows.append(self.runner["llm_trial"](case, self.instance, variant, 1,
+                                                              config, plan, directory))
+                (directory / "summary.json").write_text(json.dumps({
+                    "complete": False, "rows": rows, "api_calls": 8, "max_planned_api_calls": 8,
+                    "variants": self.runner["aggregate"](rows)}))
+                replay = verifier["verify"](directory, allow_partial=True)
+                self.assertEqual(replay["verified_trials"], 5)
+                self.assertEqual(replay["constrained_stages"], 3)
+                self.assertEqual(replay["complete_schema_conforming_stages"], 3)
+                self.assertEqual(replay["completed_revision_stages_by_variant"]["combined"], 1)
+                trial = directory / rows[1]["artifact_dir"]
+                path = trial / "stages/generation/request.json"
+                request = json.loads(path.read_text())
+                if style == "responses":
+                    request["reasoning"]["effort"] = "low"
+                else:
+                    request["reasoning_effort"] = "low"
+                path.write_text(json.dumps(request))
+                with self.assertRaisesRegex(ValueError, "Generation request differs"):
+                    verifier["verify"](directory, allow_partial=True)
+
     def test_report_keeps_failures_and_updates_readme_from_actual_counts(self):
         case = self.plan["cases"][0]
-        plan = {**self.plan, "cases": [case], "repetitions": 1}
+        plan = {**self.plan, "cases": [case], "repetitions": 1, "time_limit_seconds": 17,
+                "max_output_tokens": 2048, "audit_output_tokens": 512, "scheduling_seed": 42}
         rows = []
         for variant in ["classical", "baseline", "structured", "critique", "combined"]:
             rows.append({"case_id": case["id"], "nurses": case["nurses"], "variant": variant,
@@ -197,7 +258,7 @@ class ParityTests(unittest.TestCase):
             root = Path(temp)
             (root / "README.md").write_text("Before\n<!-- parity-results:start -->\nPending\n<!-- parity-results:end -->\nAfter\n")
             (root / "run").mkdir()
-            (root / "run/manifest.json").write_text(json.dumps({"plan": plan, "config": {}, "source_hashes": {}}))
+            (root / "run/manifest.json").write_text(json.dumps({"plan": plan, "config": {"reasoning_effort": "low"}, "source_hashes": {}}))
             summary = snapshot(root / "run", plan, rows, time.perf_counter())
             self.assertTrue(summary["complete"])
             self.assertEqual(summary["api_calls"], 4)
@@ -208,6 +269,13 @@ class ParityTests(unittest.TestCase):
             self.assertIn("| baseline | 1 | 0/1 |", text)
             self.assertIn("Before", text)
             self.assertIn("After", text)
+            for content in [text, (root / "reports" / (plan["name"] + ".md")).read_text()]:
+                self.assertIn("17-second", content)
+                self.assertIn("2,048", content)
+                self.assertIn("512", content)
+                self.assertIn("reasoning effort low", content)
+                self.assertNotIn("32,000", content)
+                self.assertNotIn("denominator is 15", content)
 
 
 if __name__ == "__main__":

@@ -96,6 +96,7 @@ def llm_trial(case, instance, variant, repetition, config, plan, directory):
         if metadata["status"] == "started":
             metadata["status"] = "interrupted"
             metadata["usage_incomplete"] = True
+            save_json(run_dir / "metadata.json", metadata)
     else:
         try:
             run_dir, metadata = run_roster(
@@ -164,26 +165,35 @@ def aggregate(rows):
     return groups
 
 
+def protocol_text(plan, config):
+    budget = plan["time_limit_seconds"]
+    deadline = ("No client or whole-trial time limit is imposed; classical search also runs without a time limit. "
+                if budget is None else
+                f"Classical search and each LLM trial have a {budget:g}-second time limit; "
+                "each request is bounded by the remaining trial budget. ")
+    return (deadline + f"Token caps are {plan['max_output_tokens']:,} per roster stage and "
+            f"{plan['audit_output_tokens']:,} for the audit, including reasoning and answer tokens. "
+            f"All four variants request reasoning effort {config.get('reasoning_effort', 'provider default')}. ")
+
+
 def report_text(summary, plan):
     groups = summary["variants"]
     lines = ["# Matched hard-only comparison", "",
              f"Status: **{'complete' if summary['complete'] else 'in progress'}**. "
              f"{summary['completed_trials']}/{summary['planned_trials']} saved trials; "
              f"{summary['api_calls']} model calls recorded.", "",
-             "Fifteen identical input files are used by both solutions: five nurse-count strata, "
-             "with an anchor, a controlled history contrast and a controlled demand contrast in each. "
-             "Solution A runs once per input; each LLM variant runs three times per input. "
+             f"The same {len(plan['cases'])} input files are used by both solutions across "
+             f"{len({c['nurses'] for c in plan['cases']})} nurse-count strata. "
+             f"Solution A runs once per input; each LLM variant runs {plan['repetitions']} times per input. "
              "All inputs represent one independent seven-day week at week zero.", "",
              "Both solve hard-constraint feasibility only: minimum coverage, qualified skills, "
              "at most one working shift per nurse-day, and legal successions including history into Monday. "
              "Complete nurse-day output and valid identifiers are also required. Surplus staffing is allowed. "
              "Neither optimizes preferences, weekends, fairness or workload. Evaluator soft scores are diagnostic only.", "",
-             "No client or whole-trial time limit is imposed; classical search also runs without a time limit. "
-             "Token caps are 32,000 per roster stage "
-             "and 16,000 for the audit. All four variants request reasoning effort high; these caps include "
-             "reasoning and answer tokens. LLM latency includes all model calls; runtime also includes local "
+             protocol_text(plan, summary['execution']['config']) +
+             "LLM latency includes all model calls; runtime also includes local "
              "pipeline work. Classical runs finish before the LLM batch to avoid local CPU contention. "
-             "LLM jobs are shuffled with scheduling seed 4263; this does not seed model sampling.", "",
+             f"LLM jobs are shuffled with scheduling seed {plan['scheduling_seed']}; this does not seed model sampling.", "",
              "| Method | Cases covered | Hard-valid trials / attempted | Output-schema valid | Mean runtime (s) | Mean model latency (s) | API calls | Reported tokens |",
              "| --- | --- | --- | --- | --- | --- | --- | --- |"]
     def number(value):
@@ -197,8 +207,9 @@ def report_text(summary, plan):
                      f"{s['api_calls']} | {'—' if name == 'classical' else format(s['reported_tokens'], ',')} |")
     lines += ["", "Counts include every saved attempt, including errors, incomplete outputs and abstentions. "
               "A classical infeasibility proof is a resolved decision, not a hard-valid roster. "
-              "The classical denominator is 15; each LLM denominator is 45 at completion. "
-              "Three model repetitions on one input do not create three different benchmark instances.", "",
+              f"The classical denominator is {len(plan['cases'])}; each LLM denominator is "
+              f"{len(plan['cases']) * plan['repetitions']} at completion. "
+              "Model repetitions on one input do not create different benchmark instances.", "",
               "## Validity by nurse count", "",
               "| Nurses | Classical | Baseline | Structured | Critique | Combined |",
               "| --- | --- | --- | --- | --- | --- |"]
@@ -232,7 +243,7 @@ def report_text(summary, plan):
         lines.append(f"- {name}: {counts['false_on_a_feasible']} false on A-validated feasible inputs; "
                      f"{counts['agrees_with_a_proof']} agree with an A infeasibility proof; "
                      f"{counts['unverified']} unverified because A did not resolve feasibility.")
-    lines += ["", "This purposive 15-case subset is not representative of every INRC2 instance. "
+    lines += ["", f"This purposive {len(plan['cases'])}-case subset is not representative of every INRC2 instance. "
               "Nurse count varies alongside skill/shift mix, so differences across sizes are descriptive. "
               "History contrasts hold weekly demand fixed; demand contrasts hold history fixed, but weekly "
               "demand distributions change as well as their totals. Four/eight-week labels are source metadata: "
@@ -285,10 +296,10 @@ def publish_snapshot(directory, plan, rows, started):
         if begin not in text or end not in text:
             raise ValueError("README comparison markers missing")
         section = ["", "## Matched results", "",
-                   "Same 15 inputs and four hard constraints; 1 classical run and 3 repetitions per LLM variant per case. "
-                   "Both seek feasibility only, without imposed time limits. B requests high reasoning effort, "
-                   "with 32,000 generation/revision tokens and 16,000 audit tokens. "
-                   "See [case selection](docs/benchmark.md) and [full results](reports/hard_only_parity_v1.md).", "",
+                   f"Same {len(plan['cases'])} inputs and four hard constraints; 1 classical run and "
+                   f"{plan['repetitions']} repetitions per LLM variant per case. Both seek feasibility only. "
+                   + protocol_text(plan, summary['execution']['config'])
+                   + f"See [case selection](docs/benchmark.md) and [full results](reports/{plan['name']}.md).", "",
                    "| Method | Cases tested | Hard-valid trials / attempted | Mean runtime (s) | API calls |",
                    "| --- | --- | --- | --- | --- |"]
         for name, stats in summary["variants"].items():
@@ -329,6 +340,10 @@ def main():
         directory = ROOT / "outputs/comparison" / (plan["name"] + "_" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ"))
         directory.mkdir(parents=True, exist_ok=False)
         save_json(directory / "manifest.json", frozen)
+        for name in frozen["source_hashes"]:
+            snapshot = directory / "source_snapshot" / name
+            snapshot.parent.mkdir(parents=True, exist_ok=True)
+            snapshot.write_bytes((ROOT / name).read_bytes())
     print(json.dumps({"run_dir": str(directory), "mode": plan["mode"],
                       "max_calls": len(cases) * 8 * plan["repetitions"]}), flush=True)
     started = time.perf_counter()

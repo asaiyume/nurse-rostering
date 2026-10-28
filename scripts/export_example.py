@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT))
 
 from rostering.evaluate import evaluate
 from rostering.llm.api import completed, output_text
+from scripts.run_comparison import protocol_text
 
 
 def export(directory, case_id="n050w4_h2_wd6", repetition=1):
@@ -38,7 +39,8 @@ def export(directory, case_id="n050w4_h2_wd6", repetition=1):
                 if (stage / name).exists():
                     files[f"{variant}/{stage.name}/{name}"] = (stage / name).read_bytes()
             request = json.loads((stage / "request.json").read_text())
-            files[f"{variant}/{stage.name}/full-prompt.txt"] = request["messages"][0]["content"].encode()
+            prompt = request["input"] if summary["execution"]["config"]["api_style"] == "responses" else request["messages"][0]["content"]
+            files[f"{variant}/{stage.name}/full-prompt.txt"] = prompt.encode()
             if (stage / "response.json").exists():
                 response = json.loads((stage / "response.json").read_text())
                 message = response.get("choices", [{}])[0].get("message", {})
@@ -88,8 +90,7 @@ def export(directory, case_id="n050w4_h2_wd6", repetition=1):
              f"requiring {case['minimum_staff_days']} minimum nurse-days. "
              "This larger history-contrast case and repetition were selected before the final results, "
              "not because a variant succeeded or failed. It is not claimed to be the hardest case.", "",
-             "All LLM variants request high reasoning effort with no imposed request or whole-trial timeout. "
-             "Token caps are 32,000 for roster generation/revision and 16,000 for audit, including thinking tokens. "
+             protocol_text(plan, summary["execution"]["config"]) +
              "There is no soft objective. The classical witness uses the same input and hard constraints.", "",
              "| Method | Initial shortage / illegal transitions | Final shortage / illegal transitions | Final hard-valid | Status | Reported thinking tokens |",
              "| --- | --- | --- | --- | --- | --- |"]
@@ -138,7 +139,7 @@ def export(directory, case_id="n050w4_h2_wd6", repetition=1):
         path = target / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(data)
-    archive = ROOT.parent / f"report/high-effort-{case['nurses']}-nurse-example.zip"
+    archive = ROOT / f"outputs/exports/{case_id}-r{repetition}-example.zip"
     archive.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as z:
         for name, data in sorted(files.items()):
